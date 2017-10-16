@@ -15,7 +15,7 @@
     <div
       id="close-all-news"
       class="btn btn-danger"
-      style="position: fixed; bottom: 5px; right: 5px; z-index: 100000"
+      style="position: fixed; bottom: 35px; right: 5px; z-index: 100000"
     >close news</div>
   `);
   $('#close-all-news').on('click', () => {
