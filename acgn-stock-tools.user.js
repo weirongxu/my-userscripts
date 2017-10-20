@@ -38,11 +38,11 @@
         style="position: fixed; bottom: 35px; right: 5px; z-index: 100000"
       >toggle news</div>
     `);
-    const $newsDom = $('.fixed-bottom .container');
-    console.dir($newsDom);
-    $newsDom.find('.rounded').hide();
+    const $newsDom = $('.fixed-bottom .container .rounded:has(.fa-times)');
+    $newsDom.hide();
     $('#toggle-news').on('click', () => {
-      $newsDom.find('.rounded').toggle();
+      const isShow = $newsDom.toArray().every(it => $(it).is(':visible'));
+      $newsDom.slideToggle(!isShow);
       /*
       $('.fixed-bottom .container .rounded .d-flex a.btn').each(function() {
         this.click();
