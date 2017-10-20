@@ -30,7 +30,8 @@
     });
   };
 
-  waitFor('.fixed-bottom .container .rounded .d-flex a.btn').then(() => {
+  const newsSelector = '.fixed-bottom .container .rounded:has(.fa-times)';
+  waitFor(newsSelector).then(() => {
     $('body').append(`
       <div
         id="toggle-news"
@@ -38,16 +39,11 @@
         style="position: fixed; bottom: 35px; right: 5px; z-index: 100000"
       >toggle news</div>
     `);
-    const $newsDom = $('.fixed-bottom .container .rounded:has(.fa-times)');
+    const $newsDom = () => $(newsSelector);
     $newsDom.hide();
     $('#toggle-news').on('click', () => {
-      const isShow = $newsDom.toArray().every(it => $(it).is(':visible'));
-      $newsDom.slideToggle(!isShow);
-      /*
-      $('.fixed-bottom .container .rounded .d-flex a.btn').each(function() {
-        this.click();
-      });
-      */
+      const isShow = $newsDom().toArray().every(it => $(it).is(':visible'));
+      $newsDom().slideToggle(!isShow);
     });
   });
 })();
