@@ -2,7 +2,7 @@
 // @name         acgn-stock toggle news
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  acgn-stock close news
+// @description  acgn-stock toggle news
 // @require      https://code.jquery.com/jquery-latest.js
 // @author       Raidou
 // @match        *://acgn-stock.com/*
