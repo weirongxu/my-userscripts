@@ -40,7 +40,7 @@
       >toggle news</div>
     `);
     const $newsDom = () => $(newsSelector);
-    $newsDom.hide();
+    $newsDom().hide();
     $('#toggle-news').on('click', () => {
       const isShow = $newsDom().toArray().every(it => $(it).is(':visible'));
       $newsDom().slideToggle(!isShow);
