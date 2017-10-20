@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         百度网盘直接下载助手
-// @namespace    undefined
+// @namespace    https://gist.github.com/weirongxu/c0d241ff3d94b2140570bf56124b382a
 // @version      0.9.24
 // @description  直接下载百度网盘和百度网盘分享的文件,避免下载文件时调用百度网盘客户端,获取网盘文件的直接下载地址
 // @author       ivesjay

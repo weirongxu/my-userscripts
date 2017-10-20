@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         acgn-stock toggle news
-// @namespace    http://tampermonkey.net/
+// @name         acgn-stock tools
+// @namespace    https://gist.github.com/weirongxu/c0d241ff3d94b2140570bf56124b382a
 // @version      0.1
-// @description  acgn-stock toggle news
+// @description  acgn-stock tools
 // @require      https://code.jquery.com/jquery-latest.js
 // @author       Raidou
 // @match        *://acgn-stock.com/*
