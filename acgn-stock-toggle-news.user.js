@@ -18,7 +18,6 @@
         if ($(selector).length) {
           resolve();
         } else {
-          console.dir($(selector));
           count ++;
           if (count < maxCount) {
             setTimeout(check, timeout);
@@ -39,11 +38,11 @@
         style="position: fixed; bottom: 35px; right: 5px; z-index: 100000"
       >toggle news</div>
     `);
-    const $newsDom = $('.fixed-bottom .container .rounded');
+    const $newsDom = $('.fixed-bottom .container');
     console.dir($newsDom);
     $newsDom.hide();
     $('#toggle-news').on('click', () => {
-      $newsDom.toggle({display: 'block'});
+      $newsDom.find('.rounded').toggle({display: 'block'});
       /*
       $('.fixed-bottom .container .rounded .d-flex a.btn').each(function() {
         this.click();
