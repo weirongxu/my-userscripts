@@ -40,9 +40,9 @@
     `);
     const $newsDom = $('.fixed-bottom .container');
     console.dir($newsDom);
-    $newsDom.hide();
+    $newsDom.find('.rounded').hide();
     $('#toggle-news').on('click', () => {
-      $newsDom.find('.rounded').toggle({display: 'block'});
+      $newsDom.find('.rounded').toggle();
       /*
       $('.fixed-bottom .container .rounded .d-flex a.btn').each(function() {
         this.click();
