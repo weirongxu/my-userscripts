@@ -42,7 +42,7 @@
     const $newsDom = () => $(newsSelector);
     $newsDom().hide();
     $('#toggle-news').on('click', () => {
-      const isShow = $newsDom().toArray().every(it => $(it).is(':visible'));
+      const isShow = $newsDom().toArray().some(it => $(it).is(':visible'));
       if (isShow) {
         $newsDom().fadeOut();
       } else {
