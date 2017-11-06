@@ -18,8 +18,7 @@ script.addEventListener('load', () => {
 }, false)
 document.body.appendChild(script)
 
-function showInfo($video, info) {
-  video = $video[0]
+function showInfo(video, info) {
   const rect = video.getBoundingClientRect()
   const id = 'video-change-play-rate-info'
   let $info = $(`#${id}`)
@@ -39,30 +38,53 @@ function showInfo($video, info) {
     left: rect.left + video.clientWidth/2 - $info.width()/2 + 'px',
     top: rect.top + video.clientHeight/2 - $info.height()/2 + 'px',
   })
+  $info.fadeIn()
+  setTimeout(() => {
+    $info.fadeOut()
+  }, 600)
+}
+
+function videoInView() {
+  const $video = $('video')
+  let maxVisibleArea = 0
+  let video = null
+  $video.toArray().forEach((_video) => {
+    const rect = _video.getBoundingClientRect()
+    const left = Math.max(rect.left, 0)
+    const top = Math.max(rect.top, 0)
+    const right = Math.min(rect.right, window.innerWidth)
+    const bottom = Math.min(rect.bottom, window.innerHeight)
+    const visibleArea = (right-left) * (bottom-top)
+    if (visibleArea > maxVisibleArea) {
+      maxVisibleArea = visibleArea
+      video = _video
+    }
+  })
+  return video
 }
 
 function main($) {
   $(document).on('keydown', (e) => {
+    if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
+      return true
+    }
     if (e.ctrlKey) {
-      const $video = $('video')
+      const video = videoInView()
+      if (! video) {
+        return true
+      }
       switch (e.key.toLowerCase()) {
         case '[':
-          $video.each(function() {
-            this.playbackRate -= 0.05
-            showInfo($video, `rate: ${this.playbackRate.toFixed(2)}`)
-          })
+          video.playbackRate -= 0.05
+          showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`)
           return false
         case ']':
-          $video.each(function() {
-            this.playbackRate += 0.05
-            showInfo($video, `rate: ${this.playbackRate.toFixed(2)}`)
-          })
+          video.playbackRate += 0.05
+          showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`)
           return false
         case 'backspace':
-          $video.each(function() {
-            this.playbackRate = 1
-            showInfo($video, `rate: ${this.playbackRate.toFixed(2)}`)
-          })
+          video.playbackRate = 1
+          showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`)
           return false
       }
     }
