@@ -71,7 +71,7 @@ function main($) {
     if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
       return true
     }
-    if (e.shiftKey) {
+    if (e.ctrlKey) {
       const video = videoInView()
       if (! video) {
         return true
