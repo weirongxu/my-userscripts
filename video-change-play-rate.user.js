@@ -33,6 +33,7 @@ function main($) {
       padding: '5px',
       zIndex: 1000000000,
       borderRadius: '5px',
+      fontSize: '12px',
       position: 'fixed',
     })
     $info.html(info)
