@@ -18,54 +18,54 @@ script.addEventListener('load', () => {
 }, false)
 document.body.appendChild(script)
 
-let infoTimer = null
-function showInfo(video, info) {
-  const rect = video.getBoundingClientRect()
-  const id = 'video-change-play-rate-info'
-  let $info = $(`#${id}`)
-  if (! $info.length) {
-    $info = $('body').append(`<div id="${id}"></div>`).find(`#${id}`)
-  }
-  $info.css({
-    background: 'rgba(0, 0, 0, 0.5)',
-    color: 'white',
-    padding: '5px',
-    zIndex: 1000000000,
-    borderRadius: '5px',
-    position: 'fixed',
-  })
-  $info.html(info)
-  $info.css({
-    left: rect.left + video.clientWidth/2 - $info.width()/2 + 'px',
-    top: rect.top + video.clientHeight/2 - $info.height()/2 + 'px',
-  })
-  $info.fadeIn()
-  clearTimeout(infoTimer)
-  infoTimer = setTimeout(() => {
-    $info.fadeOut()
-  }, 600)
-}
-
-function videoInView() {
-  const $video = $('video')
-  let maxVisibleArea = 0
-  let video = null
-  $video.toArray().forEach((_video) => {
-    const rect = _video.getBoundingClientRect()
-    const left = Math.max(rect.left, 0)
-    const top = Math.max(rect.top, 0)
-    const right = Math.min(rect.right, window.innerWidth)
-    const bottom = Math.min(rect.bottom, window.innerHeight)
-    const visibleArea = (right-left) * (bottom-top)
-    if (visibleArea > maxVisibleArea) {
-      maxVisibleArea = visibleArea
-      video = _video
-    }
-  })
-  return video
-}
-
 function main($) {
+  let infoTimer = null
+  function showInfo(video, info) {
+    const rect = video.getBoundingClientRect()
+    const id = 'video-change-play-rate-info'
+    let $info = $(`#${id}`)
+    if (! $info.length) {
+      $info = $('body').append(`<div id="${id}"></div>`).find(`#${id}`)
+    }
+    $info.css({
+      background: 'rgba(0, 0, 0, 0.5)',
+      color: 'white',
+      padding: '5px',
+      zIndex: 1000000000,
+      borderRadius: '5px',
+      position: 'fixed',
+    })
+    $info.html(info)
+    $info.css({
+      left: rect.left + video.clientWidth/2 - $info.width()/2 + 'px',
+      top: rect.top + video.clientHeight/2 - $info.height()/2 + 'px',
+    })
+    $info.fadeIn()
+    clearTimeout(infoTimer)
+    infoTimer = setTimeout(() => {
+      $info.fadeOut()
+    }, 600)
+  }
+
+  function videoInView() {
+    const $video = $('video')
+    let maxVisibleArea = 0
+    let video = null
+    $video.toArray().forEach((_video) => {
+      const rect = _video.getBoundingClientRect()
+      const left = Math.max(rect.left, 0)
+      const top = Math.max(rect.top, 0)
+      const right = Math.min(rect.right, window.innerWidth)
+      const bottom = Math.min(rect.bottom, window.innerHeight)
+      const visibleArea = (right-left) * (bottom-top)
+      if (visibleArea > maxVisibleArea) {
+        maxVisibleArea = visibleArea
+        video = _video
+      }
+    })
+    return video
+  }
+
   $(document).on('keydown', (e) => {
     if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
       return true
