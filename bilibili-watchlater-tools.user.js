@@ -27,16 +27,22 @@ function click($elem, event) {
 function main($) {
   $(document).on('keydown', (e) => {
     if (e.shiftKey) {
-      const $item = $('.bilibili-player .bilibili-player-auxiliary-area .bilibili-player-watchlater-item[data-state-play=true]')
+      const $curItem = $('.bilibili-player .bilibili-player-auxiliary-area .bilibili-player-watchlater-item[data-state-play=true]')
       switch (e.key) {
-        case 'ArrowRight':
-          click($item.next().find('.bilibili-player-watchlater-item-sup'), 'click')
-          return false
         case 'ArrowLeft':
-          click($item.prev().find('.bilibili-player-watchlater-item-sup'), 'click')
+          click($curItem.prev().find('.bilibili-player-watchlater-item-sup'))
+          return false
+        case 'ArrowRight':
+          click($curItem.next().find('.bilibili-player-watchlater-item-sup'))
+          return false
+        case 'ArrowUp':
+          click($curItem.find('.bilibili-player-watchlater-part-item[data-state-play=true]').prev())
+          return false
+        case 'ArrowDown':
+          click($curItem.find('.bilibili-player-watchlater-part-item[data-state-play=true]').next())
           return false
         case 'Backspace':
-          click($item.find('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'), 'click')
+          click($curItem.find('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'))
           return false
       }
     }
