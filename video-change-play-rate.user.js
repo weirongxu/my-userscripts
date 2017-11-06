@@ -18,6 +18,7 @@ script.addEventListener('load', () => {
 }, false)
 document.body.appendChild(script)
 
+let infoTimer = null
 function showInfo(video, info) {
   const rect = video.getBoundingClientRect()
   const id = 'video-change-play-rate-info'
@@ -31,15 +32,16 @@ function showInfo(video, info) {
     padding: '5px',
     zIndex: 1000000000,
     borderRadius: '5px',
+    position: 'fixed',
   })
   $info.html(info)
   $info.css({
-    position: 'fixed',
     left: rect.left + video.clientWidth/2 - $info.width()/2 + 'px',
     top: rect.top + video.clientHeight/2 - $info.height()/2 + 'px',
   })
   $info.fadeIn()
-  setTimeout(() => {
+  clearTimeout(infoTimer)
+  infoTimer = setTimeout(() => {
     $info.fadeOut()
   }, 600)
 }
