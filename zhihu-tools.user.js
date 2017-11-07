@@ -13,32 +13,56 @@
 
 const fnName = `ZhihuTools_${Number(new Date())}`
 
-GM_xmlhttpRequest({
-  method: 'GET',
-  url: "https://code.jquery.com/jquery-2.2.4.min.js",
-  onload(res) {
-    console.log(res.response)
-    const script = document.createElement("script")
-    script.text = `${res.response};${fnName}(jQuery.noConflict(true));`
-    document.body.appendChild(script)
-  },
-})
+function XHR(options) {
+  return new Promise((resolve, reject) => {
+    GM_xmlhttpRequest({
+      ...options,
+      onload(res) {
+        resolve(res)
+      },
+      onerror(err) {
+        reject(res)
+      },
+    })
+  })
+}
 
-// var script = document.createElement('script')
-// script.setAttribute("src", "//code.jquery.com/jquery-2.2.4.min.js")
-// script.addEventListener('load', () => {
-//   main(jQuery.noConflict(true))
-// }, false)
-// document.body.appendChild(script)
+(async () => {
+  const [
+    jquery,
+    jsCookie,
+  ] = await Promise.all([
+    'https://code.jquery.com/jquery-2.2.4.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.0/js.cookie.min.js',
+  ].map(url => XHR({
+    method: 'GET',
+    url,
+  })))
+  eval(`
+    ${jquery.response};
+    ${jsCookie.response};
+    ${fnName}(jQuery.noConflict(true), Cookies);
+  `)
+})()
+
 
 class Zhihu {
-  constructor($) {
+  constructor($, Cookies) {
     this.$ = $
+    this.Cookies = Cookies
 
+    // console.dir($('#data'))
+    // zhihu remove #data state dom when load page
+
+    // console.dir(Cookies.get())
+    // console.dir(document.cookie)
     this.config = JSON.parse($('#clientConfig').val())
     this.headers = {
+      // z_c0
       'Authorization': `Bearer ${this.config.tokens['Authorization'].join('|')}`,
+      // d_c0
       'X-UDID': this.config.tokens['X-UDID'],
+      // _xsrf
       'X-XSRF-TOKEN': this.config.tokens['X-XSRF-TOKEN'],
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -128,9 +152,8 @@ class Zhihu {
   }
 }
 
-window[fnName] = ($) => {
-  console.dir('test')
-  const zhihu = new Zhihu($)
+window[fnName] = (...args) => {
+  const zhihu = new Zhihu(...args)
   zhihu.boot()
 }
 
