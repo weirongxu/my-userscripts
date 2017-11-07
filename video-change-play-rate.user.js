@@ -76,7 +76,7 @@ function main($) {
       if (! video) {
         return true
       }
-      switch (e.key.toLowerCase()) {
+      switch (e.key) {
         case '[':
           video.playbackRate -= 0.05
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`)
@@ -85,7 +85,7 @@ function main($) {
           video.playbackRate += 0.05
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`)
           return false
-        case 'backspace':
+        case 'Backspace':
           video.playbackRate = 1
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`)
           return false
