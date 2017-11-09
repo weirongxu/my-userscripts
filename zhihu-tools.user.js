@@ -76,22 +76,23 @@ class Zhihu {
     // console.dir(Cookies.get())
     // console.dir(document.cookie)
     const $ = this.$
-    const html = await (await fetch('https://www.zhihu.com', {
-      credentials: 'same-origin'
-    })).text()
-    const state = $(html).find('#data').attr('data-state')
-    console.dir(state)
-    // this.config = JSON.parse($('#clientConfig').val())
-    // this.headers = {
-    //   // z_c0
-    //   'Authorization': `Bearer ${this.config.tokens['Authorization'].join('|')}`,
-    //   // d_c0
-    //   'X-UDID': this.config.tokens['X-UDID'],
-    //   // _xsrf
-    //   'X-XSRF-TOKEN': this.config.tokens['X-XSRF-TOKEN'],
-    //   'Accept': 'application/json',
-    //   'Content-Type': 'application/json',
-    // }
+    // const html = await (await fetch('https://www.zhihu.com', {
+    //   credentials: 'same-origin'
+    // })).text()
+    // console.log(html)
+    // const state = $(html).find('#data').attr('data-state')
+    // console.dir(state)
+    this.config = JSON.parse($('#clientConfig').val())
+    this.headers = {
+      // z_c0
+      'Authorization': `Bearer ${this.config.tokens['Authorization'].join('|')}`,
+      // d_c0
+      'X-UDID': this.config.tokens['X-UDID'],
+      // _xsrf
+      'X-XSRF-TOKEN': this.config.tokens['X-XSRF-TOKEN'],
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    }
     console.dir(location.host)
     switch (location.host) {
       case 'www.zhihu.com':
