@@ -46,9 +46,6 @@ function main($) {
         case 'ArrowDown':
           click($curPlayerItem().find('.bilibili-player-watchlater-part-item[data-state-play=true]').next())
           return false
-        case 'Backspace':
-          click($curPlayerItem().find('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'))
-          return false
         case 'Enter':
           click($('.bilibili-player-video-web-fullscreen'))
           return false
@@ -56,7 +53,7 @@ function main($) {
           click($curPlayerItem().find('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'))
           return false
       }
-    } else {
+    } else if (! (e.metaKey || e.altKey || e.ctrlKey)) {
       switch(e.key) {
         case 'ArrowLeft':
           $('.bilibili-player-video video')[0].currentTime -= 5
