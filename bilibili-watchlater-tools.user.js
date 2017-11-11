@@ -24,25 +24,33 @@ function click($elem, event) {
   }
 }
 
+const $curPlayerItem = () =>
+  $('.bilibili-player .bilibili-player-auxiliary-area .bilibili-player-watchlater-item[data-state-play=true]')
+
 function main($) {
   $(document).on('keydown', (e) => {
     if (e.shiftKey) {
-      const $curItem = $('.bilibili-player .bilibili-player-auxiliary-area .bilibili-player-watchlater-item[data-state-play=true]')
       switch (e.key) {
         case 'ArrowLeft':
-          click($curItem.prev().find('.bilibili-player-watchlater-item-sup'))
+          click($curPlayerItem().prev().find('.bilibili-player-watchlater-item-sup'))
           return false
         case 'ArrowRight':
-          click($curItem.next().find('.bilibili-player-watchlater-item-sup'))
+          click($curPlayerItem().next().find('.bilibili-player-watchlater-item-sup'))
           return false
         case 'ArrowUp':
-          click($curItem.find('.bilibili-player-watchlater-part-item[data-state-play=true]').prev())
+          click($curPlayerItem().find('.bilibili-player-watchlater-part-item[data-state-play=true]').prev())
           return false
         case 'ArrowDown':
-          click($curItem.find('.bilibili-player-watchlater-part-item[data-state-play=true]').next())
+          click($curPlayerItem().find('.bilibili-player-watchlater-part-item[data-state-play=true]').next())
           return false
         case 'Backspace':
-          click($curItem.find('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'))
+          click($curPlayerItem().find('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'))
+          return false
+        case 'Enter':
+          click($('.bilibili-player-video-web-fullscreen'))
+          return false
+        case '|':
+          click($curPlayerItem().find('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'))
           return false
       }
     }
