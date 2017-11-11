@@ -77,11 +77,11 @@ function main($) {
         return true
       }
       switch (e.key) {
-        case '[':
+        case '{':
           video.playbackRate -= 0.05
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`)
           return false
-        case ']':
+        case '}':
           video.playbackRate += 0.05
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`)
           return false

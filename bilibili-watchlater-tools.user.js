@@ -29,6 +29,9 @@ const $curPlayerItem = () =>
 
 function main($) {
   $(document).on('keydown', (e) => {
+    if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
+      return true
+    }
     if (e.shiftKey) {
       switch (e.key) {
         case 'ArrowLeft':
@@ -51,6 +54,15 @@ function main($) {
           return false
         case '|':
           click($curPlayerItem().find('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'))
+          return false
+      }
+    } else {
+      switch(e.key) {
+        case 'ArrowLeft':
+          $('.bilibili-player-video video')[0].currentTime -= 5
+          return false
+        case 'ArrowRight':
+          $('.bilibili-player-video video')[0].currentTime += 5
           return false
       }
     }
