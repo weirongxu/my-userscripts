@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         bilibili watchlater tools
+// @name         bilibili tools
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  try to take over the world!
 // @author       Raidou
-// @match        *://*.bilibili.com/watchlater/*
+// @match        *://*.bilibili.com/*
 // @grant        none
 // ==/UserScript==
 
