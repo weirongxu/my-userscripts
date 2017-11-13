@@ -6,6 +6,8 @@
 // @author       Raidou
 // @match        *://*.zhihu.com/*
 // @grant        GM_xmlhttpRequest
+// @grant        GM_getValue
+// @grant        GM_setValue
 // ==/UserScript==
 
 (function() {
@@ -33,19 +35,21 @@ function XHR(options) {
     jsCookie,
   ] = await Promise.all([
     'https://code.jquery.com/jquery-2.2.4.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.0/js.cookie.min.js',
   ].map(url => XHR({
     method: 'GET',
     url,
   })))
   eval(`
     ${jquery.response};
-    ${fnName}(jQuery.noConflict(true));
+    ${jsCookie.response};
+    ${fnName}(jQuery.noConflict(true), Cookies);
   `)
 })()
 
 
 class Zhihu {
-  constructor($) {
+  constructor($, Cookies) {
     this.$ = $
     this.headers = {
       'Accept': 'application/json',
@@ -101,11 +105,33 @@ class Zhihu {
     }
   }
 
+  async loadToken() {
+     const token = await GM_getValue('my-user-token', false)
+     if (token) {
+       this.token = JSON.parse(token)
+       console.dir(this.token)
+       this.headers = {
+         ...this.token,
+       }
+     } else {
+       this.token = null
+     }
+  }
+
+  async setToken(token) {
+    await GM_setValue('my-user-token', JSON.stringify(token))
+    await this.loadToken()
+  }
+
   async boot() {
     const $ = this.$
+    await this.loadToken()
+
     switch (location.host) {
       case 'www.zhihu.com':
-        this.home($)
+        if (this.token) {
+          this.home($)
+        }
         break
       case 'zhuanlan.zhihu.com':
         this.zhuanlan($)
@@ -149,18 +175,6 @@ class Zhihu {
   }
 
   async home($) {
-    const html = await (await fetch('https://www.zhihu.com', {
-      credentials: 'same-origin'
-    })).text()
-    const state = JSON.parse($(html).filter('#data').attr('data-state'))
-    this.headers = {
-      ...{
-        'Authorization': `Bearer ${state.token.carCompose}`,
-        'X-UDID': state.token.xUDID,
-        'X-XSRF-TOKEN': state.token.xsrf,
-      },
-    }
-
     this.watch($('body'), '.Menu.PushNotifications-menu', false, ($menu) => {
       const $list = $menu.find('.PushNotifications-list')
       this.watch($list, '.PushNotifications-item', false, async ($item) => {
@@ -189,16 +203,14 @@ class Zhihu {
 
   async zhuanlan($) {
     this.config = JSON.parse($('#clientConfig').val())
-    this.headers = {
-      ...{
-        // z_c0
-        'Authorization': `Bearer ${this.config.tokens['Authorization'].join('|')}`,
-        // d_c0
-        'X-UDID': this.config.tokens['X-UDID'],
-        // _xsrf
-        'X-XSRF-TOKEN': this.config.tokens['X-XSRF-TOKEN'],
-      },
-    }
+    await this.setToken({
+      // z_c0
+      'Authorization': `Bearer ${this.config.tokens['Authorization'].join('|')}`,
+      // d_c0
+      'X-UDID': this.config.tokens['X-UDID'],
+      // _xsrf
+      'X-XSRF-TOKEN': this.config.tokens['X-XSRF-TOKEN'],
+    })
 
     const articleId = this.matchArticleId(location)
     if (articleId) {
