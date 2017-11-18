@@ -55,6 +55,10 @@
     const $sendToSeed = $num.after('<br><button type="button">send to "Seed"</button>').next().next();
     $sendToSeed.on('click', () => {
       $num.val('81099249');
+      $num.change();
+    });
+    $num.on('change', () => {
+       $num.val($num.val().replace(/ |\+/g, ''));
     });
     autoSave($num, 'num');
     autoSave($('[name="message"]'), 'message');
