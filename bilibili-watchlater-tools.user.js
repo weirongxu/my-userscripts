@@ -47,7 +47,7 @@ function main($) {
           click($curPlayerItem().find('.bilibili-player-watchlater-part-item[data-state-play=true]').next())
           return false
         case 'Enter':
-          click($('.bilibili-player-video-web-fullscreen'))
+          click($('.bilibili-player-video-web-fullscreen, .bilibili-live-player-video-controller-web-fullscreen-btn button'))
           return false
         case '|':
           click($curPlayerItem().find('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'))
