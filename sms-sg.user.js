@@ -44,10 +44,12 @@
   const autoSave = ($dom, name) => {
     $dom.val(localStorage.getItem(name));
     $dom.trigger('change');
-    $dom.on('keyup', () => {
-      console.log($dom.val());
+
+    const change = () => {
       localStorage.setItem(name, $dom.val());
-    });
+    };
+    $dom.on('change', change);
+    $dom.on('keyup', change);
   };
 
   $(() => {
