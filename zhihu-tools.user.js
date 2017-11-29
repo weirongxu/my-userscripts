@@ -85,18 +85,6 @@ class Zhihu {
         },
       })
     })
-    // const res = await fetch(url, {
-    //   method: 'POST',
-    //   body: Object.entries(form).reduce((f, [key, value]) => {
-    //     f.append(key, value)
-    //     return f
-    //   }, new FormData()),
-    //   headers: {
-    //     'Content-Type': 'application/x-www-form-urlencoded',
-    //   },
-    //   credentials: 'same-origin',
-    //   ...options,
-    // })
   }
 
   async post(url, body, options) {
