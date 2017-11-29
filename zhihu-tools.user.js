@@ -166,15 +166,18 @@ class Zhihu {
     return 183046846
   }
 
-  async inReadLater(articleId) {
-    const collecteds = await this.get(`https://www.zhihu.com/api/v4/articles/${articleId}/relations/collected?favlist_ids=[${this.readLaterId}]`)
+  async inReadLater(articleId, type) {
+    const url = type === 'article' ?
+      `https://www.zhihu.com/api/v4/articles/${articleId}/relations/collected?favlist_ids=`
+      : `https://www.zhihu.com/api/v4/answers/${articleId}/relations/collected?favlist_ids=`
+    const collecteds = await this.get(`${url}[${this.readLaterId}]`)
     return collecteds[0].collected
   }
 
-  async addReadLater(articleId) {
+  async addReadLater(articleId, type) {
     const data = await this.post(`https://www.zhihu.com/api/v4/favlists/${this.readLaterId}/items`, {
       content_id: articleId,
-      content_type: 'article',
+      content_type: type,
     })
     if (data.content) {
       return data.content
@@ -215,15 +218,15 @@ class Zhihu {
     }
   }
 
-  clickToggleCollect($btn, articleId) {
+  clickToggleCollect($btn, articleId, type) {
     $btn.on('click', async () => {
       if ($btn.data('collected')) {
-        alert('Doing')
+        alert('Doing...')
         // TODO
         // await this.removeReadLater(articleId)
         // this.btnCollected($btn, false)
       } else {
-        await this.addReadLater(articleId)
+        await this.addReadLater(articleId, type)
         this.btnCollected($btn)
       }
     })
@@ -234,20 +237,19 @@ class Zhihu {
       const $list = $menu.find('.PushNotifications-list')
       this.watch($list, '.PushNotifications-item', false, async ($item) => {
         const href = $item.find('> span:nth-child(3) a').attr('href')
-        if (href.toString().includes('zhuanlan')) {
-          $item.append('<span class="read-later Button">Read later</span>')
-          const articleId = this.matchArticleId(href)
-          const $laterBtn = $item.find('.read-later')
-          $laterBtn.css({
-            padding: '5px',
-            lineHeight: '14px',
-            margin: '0 10px',
-          })
-          if (await this.inReadLater(articleId)) {
-            this.btnCollected($laterBtn)
-          }
-          this.clickToggleCollect($laterBtn, articleId)
+        const type = href.toString().includes('zhuanlan') ? 'article' : 'answer'
+        $item.append('<span class="read-later Button">Read later</span>')
+        const articleId = this.matchArticleId(href)
+        const $laterBtn = $item.find('.read-later')
+        $laterBtn.css({
+          padding: '5px',
+          lineHeight: '14px',
+          margin: '0 10px',
+        })
+        if (await this.inReadLater(articleId, type)) {
+          this.btnCollected($laterBtn)
         }
+        this.clickToggleCollect($laterBtn, articleId, type)
       })
     })
   }
@@ -271,10 +273,10 @@ class Zhihu {
       `
       const $laterBtn = $('.Navbar-functionality').prepend(
         `<a class="read-later" style="${css}">Read later</a>`).find('.read-later')
-      if (await this.inReadLater(articleId)) {
+      if (await this.inReadLater(articleId, 'article')) {
         this.btnCollected($laterBtn)
       }
-      this.clickToggleCollect($laterBtn, articleId)
+      this.clickToggleCollect($laterBtn, articleId, 'article')
     }
   }
 }
