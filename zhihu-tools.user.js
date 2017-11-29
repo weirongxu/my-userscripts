@@ -51,25 +51,60 @@ function XHR(options) {
 class Zhihu {
   constructor($, Cookies) {
     this.$ = $
+    this.Cookies = Cookies
     this.headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     }
   }
 
-  async get(url) {
+  async get(url, options={}) {
     const res = await fetch(url, {
       method: 'GET',
       headers: this.headers,
+      ...options,
     })
     return await res.json()
   }
 
-  async post(url, body) {
+  async form(url, form, options={}) {
+    form._xsrf = Cookies.get('_xsrf')
+    return await new Promise((resolve, reject) => {
+      this.$.ajax({
+        type: 'POST',
+        url,
+        data: form,
+        xhrFields: {
+          withCredentials: true,
+        },
+        success(data, textStatus, xhr) {
+          resolve(data)
+        },
+        error(xhr, textStatus, error) {
+          reject(error)
+        },
+      })
+    })
+    // const res = await fetch(url, {
+    //   method: 'POST',
+    //   body: Object.entries(form).reduce((f, [key, value]) => {
+    //     f.append(key, value)
+    //     return f
+    //   }, new FormData()),
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //   },
+    //   credentials: 'same-origin',
+    //   ...options,
+    // })
+  }
+
+  async post(url, body, options) {
     const res = await fetch(url, {
       method: 'POST',
       headers: this.headers,
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
+      ...options,
     })
     return await res.json()
   }
@@ -139,23 +174,36 @@ class Zhihu {
     }
   }
 
-  get readLayterId() {
+  get readLaterId() {
     return 183046846
   }
+
   async inReadLater(articleId) {
-    const collecteds = await this.get(`https://www.zhihu.com/api/v4/articles/${articleId}/relations/collected?favlist_ids=[${this.readLayterId}]`)
+    const collecteds = await this.get(`https://www.zhihu.com/api/v4/articles/${articleId}/relations/collected?favlist_ids=[${this.readLaterId}]`)
     return collecteds[0].collected
   }
 
-  async addToReadLater(articleId) {
-    const data = await this.post(`https://www.zhihu.com/api/v4/favlists/${this.readLayterId}/items`, {
+  async addReadLater(articleId) {
+    const data = await this.post(`https://www.zhihu.com/api/v4/favlists/${this.readLaterId}/items`, {
       content_id: articleId,
       content_type: 'article',
     })
     if (data.content) {
       return data.content
     } else {
-      throw Error('read later error')
+      throw Error('add read later error')
+    }
+  }
+
+  async removeReadLater(articleId) {
+    const data = await this.form('https://www.zhihu.com/collection/remove', {
+      answer_id: articleId,
+      favlist_id: this.readLaterId,
+    })
+    if (data.msg === 'ok') {
+      return data.r
+    } else {
+      throw Error('remove read later error')
     }
   }
 
@@ -167,10 +215,29 @@ class Zhihu {
     return match[1]
   }
 
-  btnCollected($btn) {
-    $btn.css({
-      color: 'white',
-      background: '#ccc',
+  btnCollected($btn, isCollected=true) {
+    if (isCollected) {
+      $btn.css({
+        color: 'white',
+        background: '#ccc',
+      }).data('collected', true)
+    } else {
+      $btn.removeAttr('style')
+        .data('collected', false)
+    }
+  }
+
+  clickToggleCollect($btn, articleId) {
+    $btn.on('click', async () => {
+      if ($btn.data('collected')) {
+        alert('Doing')
+        // TODO
+        // await this.removeReadLater(articleId)
+        // this.btnCollected($btn, false)
+      } else {
+        await this.addReadLater(articleId)
+        this.btnCollected($btn)
+      }
     })
   }
 
@@ -190,12 +257,8 @@ class Zhihu {
           })
           if (await this.inReadLater(articleId)) {
             this.btnCollected($laterBtn)
-          } else {
-            $laterBtn.on('click', async () => {
-              await this.addToReadLater(articleId)
-              this.btnCollected($laterBtn)
-            })
           }
+          this.clickToggleCollect($laterBtn, articleId)
         }
       })
     })
@@ -222,12 +285,8 @@ class Zhihu {
         `<a class="read-later" style="${css}">Read later</a>`).find('.read-later')
       if (await this.inReadLater(articleId)) {
         this.btnCollected($laterBtn)
-      } else {
-        $laterBtn.on('click', async () => {
-          await this.addToReadLater(articleId)
-          this.btnCollected($laterBtn)
-        })
       }
+      this.clickToggleCollect($laterBtn, articleId)
     }
   }
 }
