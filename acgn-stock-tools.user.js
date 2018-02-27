@@ -10,44 +10,82 @@
 // ==/UserScript==
 
 (function() {
-  'use strict';
-  const waitFor = (selector, maxCount=20, timeout=500) => {
-    let count = 0;
-    return new Promise((resolve, reject) => {
-      const check = () => {
-        if ($(selector).length) {
-          resolve();
-        } else {
-          count ++;
-          if (count < maxCount) {
-            setTimeout(check, timeout);
-          } else {
-            reject();
-          }
-        }
-      };
-      check();
-    });
-  };
+'use strict';
 
-  const newsSelector = '.fixed-bottom .container .rounded:has(.fa-times)';
-  waitFor(newsSelector).then(() => {
-    $('body').append(`
-      <div
-        id="toggle-news"
-        class="btn btn-danger"
-        style="position: fixed; bottom: 35px; right: 5px; z-index: 100000"
-      >toggle news</div>
-    `);
-    const $newsDom = () => $(newsSelector);
-    $newsDom().hide();
-    $('#toggle-news').on('click', () => {
-      const isShow = $newsDom().toArray().some(it => $(it).is(':visible'));
-      if (isShow) {
-        $newsDom().fadeOut();
+const wait = (time) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, time)
+  })
+}
+
+const waitFor = (selector, maxCount=20, timeout=500) => {
+  let count = 0;
+  return new Promise((resolve, reject) => {
+    const check = () => {
+      if ($(selector).length) {
+        resolve();
       } else {
-        $newsDom().fadeIn();
+        count ++;
+        if (count < maxCount) {
+          setTimeout(check, timeout);
+        } else {
+          reject();
+        }
       }
-    });
+    };
+    check();
   });
+};
+
+const voteCount = () => {
+  return parseFloat($('#nav .navbar-brand.dropdown .dropdown-menu div:eq(2)').text())
+}
+
+const voteAll = async () => {
+  if (voteCount() > 0) {
+    const titleSelector = '.card-title.mb-1:contains(產品中心)';
+    if (! $(titleSelector).length) {
+      $('a.nav-link:contains(產品中心)')[0].click();
+      await waitFor(titleSelector);
+    }
+    const $btns = $('td[data-title=得票數] button:not([disabled=true])');
+    const modelBtn = '.modal.show .modal-footer button:contains(確認)';
+    for (let i=0; i < $btns.length; ++i) {
+      const $btn = $btns[i];
+      $btn.click();
+      await waitFor(modelBtn);
+      $(modelBtn).click();
+      await wait(100);
+      await waitFor('.loadingOverlay.d-none');
+    }
+  }
+};
+
+const newsSelector = '.fixed-bottom .container .rounded:has(.fa-times)';
+waitFor(newsSelector).then(() => {
+  $('body').append(`
+    <div
+      class="btn-group"
+      role="group"
+      style="position: fixed; bottom: 35px; right: 5px; z-index: 100000"
+    >
+      <div id="vote-all" class="btn btn-info">vote all</div>
+      <div id="toggle-news" class="btn btn-danger">toggle news</div>
+    </div>
+  `);
+  const $newsDom = () => $(newsSelector);
+  $newsDom().hide();
+  $('#toggle-news').on('click', () => {
+    const isShow = $newsDom().toArray().some(it => $(it).is(':visible'));
+    if (isShow) {
+      $newsDom().fadeOut();
+    } else {
+      $newsDom().fadeIn();
+    }
+  });
+
+  $('#vote-all').on('click', () => {
+    voteAll();
+  });
+});
 })();
