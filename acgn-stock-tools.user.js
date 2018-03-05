@@ -14,15 +14,15 @@
 
 const wait = (time) => {
   return new Promise((resolve, reject) => {
-    setTimeout(resolve, time)
-  })
-}
+    setTimeout(resolve, time);
+  });
+};
 
-const waitFor = (selector, maxCount=20, timeout=500) => {
+const waitFn = (fn, maxCount=20, timeout=500) => {
   let count = 0;
   return new Promise((resolve, reject) => {
-    const check = () => {
-      if ($(selector).length) {
+    const check = async () => {
+      if (await fn()) {
         resolve();
       } else {
         count ++;
@@ -37,27 +37,47 @@ const waitFor = (selector, maxCount=20, timeout=500) => {
   });
 };
 
+const waitFor = (selector, maxCount=20, timeout=500) => waitFn(() => $(selector).length, maxCount, timeout);
+
 const voteCount = () => {
-  return parseFloat($('#nav .navbar-brand.dropdown .dropdown-menu div:eq(2)').text())
-}
+  return parseFloat($('#nav .navbar-brand.dropdown .dropdown-menu div:eq(2)').text());
+};
 
 const voteAll = async () => {
-  if (voteCount() > 0) {
+  let count = voteCount()
+  if (count > 0) {
     const titleSelector = '.card-title.mb-1:contains(產品中心)';
+    const waitProductPage = async () => {
+      await waitFor(titleSelector);
+      await waitFn(() => $('table.product-list-by-season>tbody>tr').length >= 30);
+      await waitFor('.loadingOverlay.d-none');
+      // await wait(5000)
+    }
     if (! $(titleSelector).length) {
       $('a.nav-link:contains(產品中心)')[0].click();
-      await waitFor(titleSelector);
+      await waitProductPage();
     }
-    const $btns = $('td[data-title=得票數] button:not([disabled=true])');
-    const modelBtn = '.modal.show .modal-footer button:contains(確認)';
-    for (let i=0; i < $btns.length; ++i) {
-      const $btn = $btns[i];
-      $btn.click();
-      await waitFor(modelBtn);
-      $(modelBtn).click();
-      await wait(100);
-      await waitFor('.loadingOverlay.d-none');
+    const voteRun = async () => {
+      const $btns = $('td[data-title=得票數] button:not([disabled=true])');
+      if ($btns.length) {
+        const modelBtnSelector = '.modal.show .modal-footer button:contains(確認)';
+        for (let i=0; i < $btns.length && count > 0; ++i) {
+          const $btn = $btns[i];
+          $btn.click();
+          await waitFor(modelBtnSelector);
+          $(modelBtnSelector).click();
+          await wait(100);
+          await waitFor('.loadingOverlay.d-none');
+          count --;
+        }
+      }
+      if (count > 0) {
+        $('.page-link[title=下一頁]')[0].click();
+        await waitProductPage();
+        await voteRun();
+      }
     }
+    await voteRun();
   }
 };
 
