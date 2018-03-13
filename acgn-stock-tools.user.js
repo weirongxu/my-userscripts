@@ -47,12 +47,15 @@ const voteAll = async () => {
   let count = voteCount()
   if (count > 0) {
     const titleSelector = '.card-title.mb-1:contains(產品中心)';
+    const waitLoading = async () => {
+      await waitFor('.loadingOverlay.d-none');
+    };
     const waitProductPage = async () => {
       await waitFor(titleSelector);
-      await waitFn(() => $('table.product-list-by-season>tbody>tr').length >= 30);
-      await waitFor('.loadingOverlay.d-none');
+      await waitFn(() => $('table.product-list-by-season>tbody>tr').length >= 30)
+      await waitLoading();
       // await wait(5000)
-    }
+    };
     if (! $(titleSelector).length) {
       $('a.nav-link:contains(產品中心)')[0].click();
       await waitProductPage();
@@ -67,12 +70,12 @@ const voteAll = async () => {
           await waitFor(modelBtnSelector);
           $(modelBtnSelector).click();
           await wait(100);
-          await waitFor('.loadingOverlay.d-none');
+          await waitLoading();
           count --;
         }
       }
       if (count > 0) {
-        $('.page-link[title=下一頁]')[0].click();
+        $('.page-link[title=下一頁]')[0].click()
         await waitProductPage();
         await voteRun();
       }
