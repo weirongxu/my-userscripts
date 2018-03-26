@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         zhihu tools
-// @namespace    https://gist.github.com/weirongxu/c0d241ff3d94b2140570bf56124b382a
+// @namespace    https://github.com/weirongxu/my-userscripts
 // @version      0.1
 // @description  zhihu tools
 // @author       Raidou

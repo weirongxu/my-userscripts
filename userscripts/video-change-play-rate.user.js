@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         video change play rate
-// @namespace    https://gist.github.com/weirongxu/c0d241ff3d94b2140570bf56124b382a
+// @namespace    https://github.com/weirongxu/my-userscripts
 // @version      0.1
 // @description  video change play rate
 // @author       Raidou

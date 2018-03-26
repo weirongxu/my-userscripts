@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         bilibili tools
-// @namespace    http://tampermonkey.net/
+// @namespace    https://github.com/weirongxu/my-userscripts
 // @version      0.1
 // @description  try to take over the world!
 // @author       Raidou

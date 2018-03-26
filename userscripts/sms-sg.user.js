@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         sms enhance
-// @namespace    https://gist.github.com/weirongxu/c0d241ff3d94b2140570bf56124b382a
+// @namespace    https://github.com/weirongxu/my-userscripts
 // @version      0.1
 // @description  sms enhance
 // @author       Raidou

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         aria2 WebUI auto restart
-// @namespace    https://gist.github.com/weirongxu/c0d241ff3d94b2140570bf56124b382a
+// @namespace    https://github.com/weirongxu/my-userscripts
 // @version      0.2
 // @description  aria2 WebUI auto restart!
 // @author       Raidou

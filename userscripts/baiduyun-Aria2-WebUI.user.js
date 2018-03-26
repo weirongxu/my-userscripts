@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         百度网盘直接下载助手 生成链接到 Aria2 WebUI， 包含--out filename
-// @namespace    https://gist.github.com/weirongxu/c0d241ff3d94b2140570bf56124b382a
+// @namespace    https://github.com/weirongxu/my-userscripts
 // @version      0.2
 // @description  百度网盘直接下载助手 生成链接到 Aria2 WebUI， 包含--out filename
 // @author       Raidou
