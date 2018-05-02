@@ -43,15 +43,14 @@ function XHR(options) {
   eval(`
     ${jquery.response};
     ${jsCookie.response};
-    ${fnName}(jQuery.noConflict(true), Cookies);
+    ${fnName}(jQuery.noConflict(true));
   `)
 })()
 
 
 class Zhihu {
-  constructor($, Cookies) {
+  constructor($) {
     this.$ = $
-    this.Cookies = Cookies
     this.headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -61,35 +60,28 @@ class Zhihu {
   async get(url, options={}) {
     const res = await fetch(url, {
       method: 'GET',
+      credentials: 'include',
       headers: this.headers,
       ...options,
     })
     return await res.json()
   }
 
-  async form(url, form, options={}) {
-    form._xsrf = Cookies.get('_xsrf')
-    return await new Promise((resolve, reject) => {
-      this.$.ajax({
-        type: 'POST',
-        url,
-        data: form,
-        xhrFields: {
-          withCredentials: true,
-        },
-        success(data, textStatus, xhr) {
-          resolve(data)
-        },
-        error(xhr, textStatus, error) {
-          reject(error)
-        },
-      })
-    })
-  }
-
   async post(url, body, options) {
     const res = await fetch(url, {
       method: 'POST',
+      credentials: 'include',
+      headers: this.headers,
+      body: JSON.stringify(body),
+      ...options,
+    })
+    return await res.json()
+  }
+
+  async del(url, body, options) {
+    const res = await fetch(url, {
+      method: 'DELETE',
+      credentials: 'include',
       headers: this.headers,
       body: JSON.stringify(body),
       ...options,
@@ -128,33 +120,12 @@ class Zhihu {
     }
   }
 
-  async loadToken() {
-     const token = await GM_getValue('my-user-token', false)
-     if (token) {
-       this.token = JSON.parse(token)
-       console.dir(this.token)
-       this.headers = {
-         ...this.token,
-       }
-     } else {
-       this.token = null
-     }
-  }
-
-  async setToken(token) {
-    await GM_setValue('my-user-token', JSON.stringify(token))
-    await this.loadToken()
-  }
-
   async boot() {
     const $ = this.$
-    await this.loadToken()
 
     switch (location.host) {
       case 'www.zhihu.com':
-        if (this.token) {
-          this.home($)
-        }
+        this.home($)
         break
       case 'zhuanlan.zhihu.com':
         this.zhuanlan($)
@@ -186,13 +157,13 @@ class Zhihu {
     }
   }
 
-  async removeReadLater(articleId) {
-    const data = await this.form('https://www.zhihu.com/collection/remove', {
-      answer_id: articleId,
-      favlist_id: this.readLaterId,
+  async removeReadLater(articleId, type) {
+    const data = await this.del(`https://www.zhihu.com/api/v4/favlists/${this.readLaterId}/items`, {
+      content_id: articleId,
+      content_type: type,
     })
-    if (data.msg === 'ok') {
-      return data.r
+    if (data.content) {
+      return data.content
     } else {
       throw Error('remove read later error')
     }
@@ -210,7 +181,7 @@ class Zhihu {
     if (isCollected) {
       $btn.css({
         color: 'white',
-        background: '#ccc',
+        background: '#8590a6',
       }).data('collected', true)
     } else {
       $btn.removeAttr('style')
@@ -221,10 +192,8 @@ class Zhihu {
   clickToggleCollect($btn, articleId, type) {
     $btn.on('click', async () => {
       if ($btn.data('collected')) {
-        alert('Doing...')
-        // TODO
-        // await this.removeReadLater(articleId)
-        // this.btnCollected($btn, false)
+        await this.removeReadLater(articleId, type)
+        this.btnCollected($btn, false)
       } else {
         await this.addReadLater(articleId, type)
         this.btnCollected($btn)
@@ -255,24 +224,13 @@ class Zhihu {
   }
 
   async zhuanlan($) {
-    this.config = JSON.parse($('#clientConfig').val())
-    await this.setToken({
-      // z_c0
-      'Authorization': `Bearer ${this.config.tokens['Authorization'].join('|')}`,
-      // d_c0
-      'X-UDID': this.config.tokens['X-UDID'],
-      // _xsrf
-      'X-XSRF-TOKEN': this.config.tokens['X-XSRF-TOKEN'],
-    })
-
     const articleId = this.matchArticleId(location)
     if (articleId) {
-      let css = `
-      padding: 18px;
-      cursor: pointer;
-      `
-      const $laterBtn = $('.Navbar-functionality').prepend(
-        `<a class="read-later" style="${css}">Read later</a>`).find('.read-later')
+      const $laterBtn = $('.ColumnPageHeader-Button').prepend(`
+        <button
+          class="read-later Button FollowButton ColumnPageHeader-FollowButton Button--primary"
+          type="button">Read later</button>
+      `).find('.read-later')
       if (await this.inReadLater(articleId, 'article')) {
         this.btnCollected($laterBtn)
       }
