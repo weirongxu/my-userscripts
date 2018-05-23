@@ -816,7 +816,7 @@
         //获取当前目录
         function getPath(){
             var hash = location.hash;
-            var regx = /(^|&|\/)path=([^&]*)(&|$)/i;
+            var regx = /(^|&|\/|\?)path=([^&]*)(&|$)/i;
             var result = hash.match(regx);
             return decodeURIComponent(result[2]);
         }
@@ -839,7 +839,9 @@
         //获取当前页面(list或者category)
         function getCurrentPage(){
             var hash = location.hash;
-            return decodeURIComponent(hash.substring(hash.indexOf('#')+1,hash.indexOf('/')));
+            var regx = /(^|&|\/|\?)vmode=([^&]*)(&|$)/i;
+            var result = hash.match(regx);
+            return decodeURIComponent(result[2]);
         }
 
         //获取文件列表
