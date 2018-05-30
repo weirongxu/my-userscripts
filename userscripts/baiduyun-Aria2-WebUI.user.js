@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         百度网盘直接下载助手 生成链接到 Aria2 WebUI， 包含--out filename
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.2
+// @version      0.3
 // @description  百度网盘直接下载助手 生成链接到 Aria2 WebUI， 包含--out filename
 // @author       Raidou
 // @require      https://code.jquery.com/jquery-latest.js
@@ -25,8 +25,8 @@
           $('.dialog').each(function() {
             let $this = $(this);
             if ($this.find('.dialog-header h3').text() === '批量链接') {
-              var $button = $this.find('.dialog-button > div').append(`<button id="${id}">复制为url --out filename</button>`);
-              $button.on('click', function() {
+              var $buttons = $this.find('.dialog-button > div').append(`<button id="${id}">复制为url --out filename</button>`);
+              $buttons.find(`#${id}`).on('click', function() {
                 copyUrls($this);
               });
             }
