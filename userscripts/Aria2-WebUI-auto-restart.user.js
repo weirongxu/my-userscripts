@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         aria2 WebUI auto restart
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.3.0
+// @version      0.3.1
 // @description  aria2 WebUI auto restart!
 // @author       Raidou
 // @require      https://code.jquery.com/jquery-latest.js
@@ -34,8 +34,7 @@
 
   async function check() {
     while(true) {
-      const $downloads = $('.download');
-      const errors = $downloads.toArray().map((download) => {
+      const errors = $('.download').toArray().map((download) => {
         const $download = $(download);
         return {
           $: $download,
