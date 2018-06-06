@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         sms enhance
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.1
+// @version      0.1.1
 // @description  sms enhance
 // @author       Raidou
-// @match        *://sms.sg/*
+// @match        *://www.sms.sg/*
 // @require      https://code.jquery.com/jquery-latest.js
 // @grant        none
 // ==/UserScript==
