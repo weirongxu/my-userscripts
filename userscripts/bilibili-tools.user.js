@@ -52,6 +52,9 @@ function main($) {
         case '|':
           click($curPlayerItem().find('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'))
           return false
+        case 'P':
+          click($curPlayerItem().prev().find('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'))
+          return false
       }
     } else if (! (e.metaKey || e.altKey || e.ctrlKey)) {
       switch(e.key) {
