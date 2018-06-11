@@ -54,8 +54,8 @@
         });
       } else {
         conf.$.find('.fa-repeat').click();
-        await wait(500);
       }
+      await wait(100);
     }
   }
 
