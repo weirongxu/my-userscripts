@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         aria2 WebUI auto restart
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.3.1
+// @version      0.3.2
 // @description  aria2 WebUI auto restart!
 // @author       Raidou
 // @require      https://code.jquery.com/jquery-latest.js
