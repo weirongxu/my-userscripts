@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.1
+// @version      0.2.0
 // @description  try to take over the world!
 // @author       Raidou
 // @match        *://*.bilibili.com/*

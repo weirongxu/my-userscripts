@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         百度网盘直接下载助手 生成链接到 Aria2 WebUI， 包含--out filename
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.3
+// @version      0.4.0
 // @description  百度网盘直接下载助手 生成链接到 Aria2 WebUI， 包含--out filename
 // @author       Raidou
-// @require      https://code.jquery.com/jquery-latest.js
+// @require      https://code.jquery.com/jquery-2.2.4.min.js
 // @match        *://pan.baidu.com/disk/home*
 // @match        *://yun.baidu.com/disk/home*
 // @match        *://pan.baidu.com/s/*
@@ -15,34 +15,34 @@
 // ==/UserScript==
 
 (function() {
-  'use strict';
+  'use strict'
 
   $(document.body).on('click', '.g-dropdown-button', function() {
-    let id = 'dialog-copy-button-with-out';
+    let id = 'dialog-copy-button-with-out'
     for (let i=0; i < 5; ++i) {
       setTimeout(() => {
         if (! document.getElementById(id)) {
           $('.dialog').each(function() {
-            let $this = $(this);
+            let $this = $(this)
             if ($this.find('.dialog-header h3').text() === '批量链接') {
-              var $buttons = $this.find('.dialog-button > div').append(`<button id="${id}">复制为url --out filename</button>`);
+              var $buttons = $this.find('.dialog-button > div').append(`<button id="${id}">复制为url --out filename</button>`)
               $buttons.find(`#${id}`).on('click', function() {
-                copyUrls($this);
-              });
+                copyUrls($this)
+              })
             }
-          });
+          })
         }
-      }, 200 * i);
+      }, 200 * i)
     }
-  });
+  })
 
   function copyUrls($this) {
-    let urls = [];
+    let urls = []
     $this.find('.dialog-body > div').each(function() {
-      urls.push(`${$(this).find('a').attr('href')} --out="${$(this).find('div').text()}"`);
-    });
-    urls = urls.join('\n');
-    GM_setClipboard(urls, 'text');
-    alert('已将链接复制到剪贴板！');
+      urls.push(`${$(this).find('a').attr('href')} --out="${$(this).find('div').text()}"`)
+    })
+    urls = urls.join('\n')
+    GM_setClipboard(urls, 'text')
+    alert('已将链接复制到剪贴板！')
   }
-})();
+})()

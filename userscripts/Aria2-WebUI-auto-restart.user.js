@@ -1,69 +1,69 @@
 // ==UserScript==
 // @name         aria2 WebUI auto restart
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.3.2
+// @version      0.4.0
 // @description  aria2 WebUI auto restart!
 // @author       Raidou
-// @require      https://code.jquery.com/jquery-latest.js
+// @require      https://code.jquery.com/jquery-2.2.4.min.js
 // @match        *://ziahamza.github.io/webui-aria2*
 // @grant        none
 // ==/UserScript==
 
 (function() {
-  'use strict';
+  'use strict'
 
   function confirmTrue(fn) {
     return new Promise((resolve, reject) => {
-      const confirm = window.confirm;
+      const confirm = window.confirm
       window.confirm = () => {
-        window.confirm = confirm;
-        resolve();
-        return true;
-      };
-      fn();
-    });
+        window.confirm = confirm
+        resolve()
+        return true
+      }
+      fn()
+    })
   }
 
   function wait(time) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        resolve();
-      }, time);
-    });
+        resolve()
+      }, time)
+    })
   }
 
   async function check() {
     while(true) {
       const errors = $('.download').toArray().map((download) => {
-        const $download = $(download);
+        const $download = $(download)
         return {
           $: $download,
           $errorStats: $download.find('.download-overview li.label-danger'),
         }
       }).filter((obj) => {
-        const $stats = obj.$errorStats;
+        const $stats = obj.$errorStats
         return $stats.find('span[title="Error"]').length || $stats.find('span[title="出错的"]').length
-      });
+      })
       if (! errors.length) {
-        return;
+        return
       }
-      const conf = errors[0];
+      const conf = errors[0]
       if (conf.$errorStats.text().trim().includes('file already existed')) {
         await confirmTrue(() => {
-          conf.$.find('.fa-stop').click();
-        });
+          conf.$.find('.fa-stop').click()
+        })
       } else {
-        conf.$.find('.fa-repeat').click();
+        conf.$.find('.fa-repeat').click()
       }
-      await wait(100);
+      await wait(100)
     }
   }
 
   async function loop() {
-    await check();
-    await wait(20000);
-    loop();
+    await check()
+    await wait(20000)
+    loop()
   }
 
-  loop();
-})();
+  loop()
+})()

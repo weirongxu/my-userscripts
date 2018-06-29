@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         huaban
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.1
+// @version      0.2.1
 // @description  花瓣添加到练习中
 // @author       Raidou
 // @match        *://huaban.com/*
@@ -9,10 +9,10 @@
 // ==/UserScript==
 
 (function() {
-  'use strict';
+  'use strict'
 
-  const watch = (dom, selector, once, callback) => {
-    if (dom) {
+  const watch = ($els, selector, once, callback) => {
+    if ($els) {
       const done = (targets) => {
         if (once === true) {
           observer.disconnect()
@@ -23,7 +23,13 @@
         mutations.forEach((mutation) => {
           if (selector) {
             if (mutation.addedNodes.length) {
-              let targets = mutation.addedNodes[0].querySelectorAll(selector)
+              let targets
+              const node = mutation.addedNodes[0]
+              if (node.matches(selector)) {
+                targets = [node]
+              } else {
+                targets = node.querySelectorAll(selector)
+              }
               if (targets.length) {
                 done(targets)
               }
@@ -33,8 +39,8 @@
           }
         })
       })
-      dom.forEach((el) => {
-        observer.observe(el, {
+      $els.forEach(($el) => {
+        observer.observe($el, {
           childList: true,
         })
       })
@@ -102,7 +108,7 @@
       event.preventDefault()
       ;(async () => {
         const text = pinView.querySelector('.info-piece.piece').textContent
-        const pinId = parseInt(pinView.attributes['data-id'].value)
+        const pinId = parseInt(pinView.getAttribute('data-id'))
         const boardId = 45259625
         const ret = await xhr('get', `https://huaban.com/pins/${pinId}/repin/?check=true`)
         console.dir(ret)
@@ -129,4 +135,4 @@
   bind(document.querySelectorAll('.image-piece.piece'))
 
   watch(document.querySelectorAll('body'), '.image-piece.piece', false, bind)
-})();
+})()

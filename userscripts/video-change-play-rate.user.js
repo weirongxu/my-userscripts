@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video change play rate
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.1
+// @version      0.2.0
 // @description  video change play rate
 // @author       Raidou
 // @match        *://*/*
@@ -9,25 +9,24 @@
 // ==/UserScript==
 
 (function() {
-'use strict'
+  'use strict'
 
-var script = document.createElement("script")
-script.setAttribute("src", "//code.jquery.com/jquery-2.2.4.min.js")
-script.addEventListener('load', () => {
-  main(jQuery.noConflict(true))
-}, false)
-document.body.appendChild(script)
+  function setStyle($node, css) {
+    Object.entries(css).forEach(([key, val]) => {
+      $node.style[key] = val
+    })
+  }
 
-function main($) {
   let infoTimer = null
   function showInfo(video, info) {
     const rect = video.getBoundingClientRect()
     const id = 'video-change-play-rate-info'
-    let $info = $(`#${id}`)
-    if (! $info.length) {
-      $info = $('body').append(`<div id="${id}"></div>`).find(`#${id}`)
+    let $info = document.querySelector(`#${id}`)
+    if (! $info) {
+      document.body.insertAdjacentHTML('beforeend', `<div id="${id}"></div>`)
+      $info = document.body.querySelector(`#${id}`)
     }
-    $info.css({
+    setStyle($info, {
       background: 'rgba(0, 0, 0, 0.5)',
       color: 'white',
       padding: '5px',
@@ -35,24 +34,24 @@ function main($) {
       borderRadius: '5px',
       fontSize: '12px',
       position: 'fixed',
+      opacity: 0,
+      transition: '.5s opacity',
     })
-    $info.html(info)
-    $info.css({
-      left: rect.left + video.clientWidth/2 - $info.width()/2 + 'px',
-      top: rect.top + video.clientHeight/2 - $info.height()/2 + 'px',
-    })
-    $info.fadeIn()
+    $info.innerHTML = info
+    $info.style.left = rect.left + video.clientWidth/2 - $info.clientWidth/2 + 'px'
+    $info.style.top = rect.top + video.clientHeight/2 - $info.clientHeight/2 + 'px'
+    $info.style.opacity = 1
     clearTimeout(infoTimer)
     infoTimer = setTimeout(() => {
-      $info.fadeOut()
+      $info.style.opacity = 0
     }, 600)
   }
 
   function videoInView() {
-    const $video = $('video')
+    const $video = document.querySelectorAll('video')
     let maxVisibleArea = 0
     let video = null
-    $video.toArray().forEach((_video) => {
+    $video.forEach((_video) => {
       const rect = _video.getBoundingClientRect()
       const left = Math.max(rect.left, 0)
       const top = Math.max(rect.top, 0)
@@ -67,7 +66,7 @@ function main($) {
     return video
   }
 
-  $(document).on('keydown', (e) => {
+  document.addEventListener('keydown', (e) => {
     if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
       return true
     }
@@ -92,5 +91,4 @@ function main($) {
       }
     }
   })
-}
 })()
