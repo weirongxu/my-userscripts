@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         acgn-stock tools
+// @name         acgn-stock
 // @namespace    https://github.com/weirongxu/my-userscripts
 // @version      0.1
 // @description  acgn-stock tools
