@@ -13,7 +13,7 @@
 (function() {
 'use strict'
 
-const fnName = `ZhihuTools_${Number(new Date())}`
+const fnName = `ZhihuTools_${Date.now()}`
 
 function XHR(options) {
   return new Promise((resolve, reject) => {
@@ -32,17 +32,14 @@ function XHR(options) {
 (async () => {
   const [
     jquery,
-    jsCookie,
   ] = await Promise.all([
     'https://code.jquery.com/jquery-2.2.4.min.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.0/js.cookie.min.js',
   ].map(url => XHR({
     method: 'GET',
     url,
   })))
   eval(`
     ${jquery.response};
-    ${jsCookie.response};
     ${fnName}(jQuery.noConflict(true));
   `)
 })()
