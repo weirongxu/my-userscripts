@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         huaban training
+// @name         huaban
 // @namespace    https://github.com/weirongxu/my-userscripts
 // @version      0.1
 // @description  花瓣添加到练习中

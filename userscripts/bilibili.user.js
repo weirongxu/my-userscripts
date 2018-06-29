@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         bilibili tools
+// @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
 // @version      0.1
 // @description  try to take over the world!

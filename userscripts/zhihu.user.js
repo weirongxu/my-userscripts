@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         zhihu tools
+// @name         zhihu
 // @namespace    https://github.com/weirongxu/my-userscripts
 // @version      0.1
 // @description  zhihu tools
