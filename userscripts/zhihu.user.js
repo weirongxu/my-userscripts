@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         zhihu
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.2.0
+// @version      0.2.2
 // @description  zhihu tools
 // @author       Raidou
 // @match        *://*.zhihu.com/*
@@ -61,40 +61,54 @@
       return await res.json()
     }
 
-    watch($els, selector, once, callback) {
-      if ($els) {
-        const done = (targets) => {
-          if (once === true) {
-            observer.disconnect()
-          }
-          callback(targets)
-        }
-        const observer = new MutationObserver((mutations) => {
-          mutations.forEach((mutation) => {
-            if (selector) {
-              if (mutation.addedNodes.length) {
-                let targets
-                const node = mutation.addedNodes[0]
-                if (node.matches(selector)) {
-                  targets = [node]
-                } else {
-                  targets = node.querySelectorAll(selector)
-                }
-                if (targets.length) {
-                  done(targets)
-                }
-              }
-            } else {
-              done()
-            }
-          })
-        })
-        $els.forEach(($el) => {
-          observer.observe($el, {
-            childList: true,
-          })
-        })
+    watch($els, config={}, callback=() => {}) {
+      if (typeof config === 'function') {
+        callback = config
+        config = {}
       }
+      config = Object.assign({
+        immediate: false,
+        once: false,
+        selector: null,
+      }, config)
+
+      const done = (target) => {
+        if (config.once === true) {
+          observer.disconnect()
+        }
+        callback(target)
+      }
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (config.selector) {
+            if (mutation.addedNodes.length) {
+              let targets
+              const node = mutation.addedNodes[0]
+              if (node.matches(config.selector)) {
+                targets = [node]
+              } else {
+                targets = node.querySelectorAll(config.selector)
+              }
+              targets.forEach(done)
+            }
+          } else {
+            done()
+          }
+        })
+      })
+      $els.forEach(($el) => {
+        if (config.immediate) {
+          if (config.selector) {
+            $el.querySelectorAll(config.selector).forEach(done)
+          } else {
+            done()
+          }
+        }
+
+        observer.observe($el, {
+          childList: true,
+        })
+      })
     }
 
     async boot() {
@@ -177,27 +191,23 @@
     }
 
     async home() {
-      this.watch([document.body], '.Menu.PushNotifications-menu', false, ($menus) => {
-        $menus.forEach($menu => {
-          const $list = $menu.querySelectorAll('.PushNotifications-list')
-          this.watch($list, '.PushNotifications-item', false, ($items) => {
-            $items.forEach(async $item => {
-              const href = $item.querySelector(':scope > span:nth-child(2) a').getAttribute('href')
-              const type = href.toString().includes('zhuanlan') ? 'article' : 'answer'
-              $item.insertAdjacentHTML('beforeend', '<span class="read-later Button">Read later</span>')
-              const articleId = this.matchArticleId(href)
-              const $laterBtn = $item.querySelector('.read-later')
-              setStyle($laterBtn, {
-                padding: '5px',
-                lineHeight: '14px',
-                margin: '0 10px',
-              })
-              if (await this.inReadLater(articleId, type)) {
-                this.btnCollected($laterBtn)
-              }
-              this.clickToggleCollect($laterBtn, articleId, type)
-            })
+      this.watch([document.body], {selector: '.Menu.PushNotifications-menu'}, ($menu) => {
+        const $list = $menu.querySelectorAll('.PushNotifications-list')
+        this.watch($list, {selector: '.PushNotifications-item'}, async ($item) => {
+          const href = $item.querySelector(':scope > span:nth-child(2) a').getAttribute('href')
+          const type = href.toString().includes('zhuanlan') ? 'article' : 'answer'
+          $item.insertAdjacentHTML('beforeend', '<span class="read-later Button">Read later</span>')
+          const articleId = this.matchArticleId(href)
+          const $laterBtn = $item.querySelector('.read-later')
+          setStyle($laterBtn, {
+            padding: '5px',
+            lineHeight: '14px',
+            margin: '0 10px',
           })
+          if (await this.inReadLater(articleId, type)) {
+            this.btnCollected($laterBtn)
+          }
+          this.clickToggleCollect($laterBtn, articleId, type)
         })
       })
     }
