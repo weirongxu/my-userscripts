@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         huaban
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.2.3
+// @version      0.2.4
 // @description  花瓣添加到练习中
 // @author       Raidou
 // @match        *://huaban.com/*
@@ -227,7 +227,7 @@
       event.preventDefault()
       const pinId = parseInt($pin.getAttribute('data-id'))
       const text = (() => {
-        const $desc = $pinView.querySelector('.description')
+        const $desc = $pin.querySelector('.description')
         return $desc ? $desc.textContent : ''
       })()
       addToTraining(pinId, text).catch(console.error)
