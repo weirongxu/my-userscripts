@@ -23,7 +23,6 @@
         mutations.forEach((mutation) => {
           if (selector) {
             if (mutation.addedNodes.length) {
-              console.dir(mutation.addedNodes)
               let targets
               const node = mutation.addedNodes[0]
               if (node.matches(selector)) {
@@ -113,7 +112,6 @@
           const pinId = parseInt(pinView.getAttribute('data-id'))
           const boardId = 45259625
           const ret = await xhr('get', `https://huaban.com/pins/${pinId}/repin/?check=true`)
-          console.dir(ret)
           if (ret.exist_pin.board_id !== boardId) {
             const ret = await xhr('post', `https://huaban.com/pins/`, {
               board_id: boardId,
