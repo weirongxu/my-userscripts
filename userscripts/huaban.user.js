@@ -203,7 +203,10 @@
     $btn.addEventListener('click', (event) => {
       event.preventDefault()
       const pinId = parseInt($pinView.getAttribute('data-id'))
-      const text = $pinView.querySelector('.description').textContent
+      const text = (() => {
+        const $desc = $pinView.querySelector('.description')
+        return $desc ? $desc.textContent : ''
+      })()
       addToTraining(pinId, text).catch(console.error)
     })
   }
@@ -223,7 +226,10 @@
     $btn.addEventListener('click', (event) => {
       event.preventDefault()
       const pinId = parseInt($pin.getAttribute('data-id'))
-      const text = $pin.querySelector('.description').textContent
+      const text = (() => {
+        const $desc = $pinView.querySelector('.description')
+        return $desc ? $desc.textContent : ''
+      })()
       addToTraining(pinId, text).catch(console.error)
     })
   }
