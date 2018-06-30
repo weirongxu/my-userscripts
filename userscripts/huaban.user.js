@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         huaban
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.2.1
+// @version      0.2.2
 // @description  花瓣添加到练习中
 // @author       Raidou
 // @match        *://huaban.com/*
@@ -23,6 +23,7 @@
         mutations.forEach((mutation) => {
           if (selector) {
             if (mutation.addedNodes.length) {
+              console.dir(mutation.addedNodes)
               let targets
               const node = mutation.addedNodes[0]
               if (node.matches(selector)) {
@@ -93,43 +94,45 @@
 
   const bind = (targets) => {
     const pinView = document.querySelector('.pin-view')
-    const toolBar = pinView.querySelector('.tool-bar')
-    let addTraining = toolBar.querySelector('.add-training')
-    if (! addTraining) {
-      toolBar.insertAdjacentHTML(
-        'afterbegin',
-        `<a class="add-training edit-btn btn" href="#">
-          <span className="text">练习</span>
-        </a>`
-      )
-      addTraining = toolBar.querySelector('.add-training')
-    }
-    addTraining.addEventListener('click', (event) => {
-      event.preventDefault()
-      ;(async () => {
-        const text = pinView.querySelector('.info-piece.piece').textContent
-        const pinId = parseInt(pinView.getAttribute('data-id'))
-        const boardId = 45259625
-        const ret = await xhr('get', `https://huaban.com/pins/${pinId}/repin/?check=true`)
-        console.dir(ret)
-        if (ret.exist_pin.board_id !== boardId) {
-          const ret = await xhr('post', `https://huaban.com/pins/`, {
-            board_id: boardId,
-            text,
-            via: pinId,
-            share_button: '0',
-          })
-          if (ret.err) {
-            message(ret.msg, 'error')
+    if (pinView) {
+      const toolBar = pinView.querySelector('.tool-bar')
+      let addTraining = toolBar.querySelector('.add-training')
+      if (! addTraining) {
+        toolBar.insertAdjacentHTML(
+          'afterbegin',
+          `<a class="add-training edit-btn btn" href="#">
+            <span className="text">练习</span>
+          </a>`
+        )
+        addTraining = toolBar.querySelector('.add-training')
+      }
+      addTraining.addEventListener('click', (event) => {
+        event.preventDefault()
+        ;(async () => {
+          const text = pinView.querySelector('.info-piece.piece').textContent
+          const pinId = parseInt(pinView.getAttribute('data-id'))
+          const boardId = 45259625
+          const ret = await xhr('get', `https://huaban.com/pins/${pinId}/repin/?check=true`)
+          console.dir(ret)
+          if (ret.exist_pin.board_id !== boardId) {
+            const ret = await xhr('post', `https://huaban.com/pins/`, {
+              board_id: boardId,
+              text,
+              via: pinId,
+              share_button: '0',
+            })
+            if (ret.err) {
+              message(ret.msg, 'error')
+            } else {
+              message(`已采集到画板：<a href="/boards/${ret.pin.board_id}">${ret.pin.board.title}</a>
+              <div class="right"><a href="/pins/${ret.pin.pin_id}">查看采集</a></div>`)
+            }
           } else {
-            message(`已采集到画板：<a href="/boards/${ret.pin.board_id}">${ret.pin.board.title}</a>
-            <div class="right"><a href="/pins/${ret.pin.pin_id}">查看采集</a></div>`)
+            message('画板中已经存在这个采集', 'error')
           }
-        } else {
-          message('画板中已经存在这个采集', 'error')
-        }
-      })()
-    })
+        })()
+      })
+    }
   }
 
   bind(document.querySelectorAll('.image-piece.piece'))
