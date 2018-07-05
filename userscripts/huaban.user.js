@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         huaban
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.2.4
+// @version      0.2.5
 // @description  花瓣添加到练习中
 // @author       Raidou
 // @match        *://huaban.com/*
@@ -275,7 +275,7 @@
   }
 
   onChangeState(() => {
-    setTimeout(bind, 500)
+    setTimeout(bind, 2000)
   })
   bind()
 })()
