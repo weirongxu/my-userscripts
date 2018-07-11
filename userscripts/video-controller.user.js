@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.3.0
+// @version      0.3.1
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -20,11 +20,13 @@
   let infoTimer = null
   function showInfo(video, info) {
     const rect = video.getBoundingClientRect()
-    const id = 'video-change-play-rate-info'
-    let $info = document.querySelector(`#${id}`)
+    const cls = 'video-controller-info'
+    const $roots = document.querySelectorAll('body, :-webkit-full-screen')
+    const $root = $roots[$roots.length-1]
+    let $info = $root.querySelector(`.${cls}`)
     if (! $info) {
-      document.body.insertAdjacentHTML('beforeend', `<div id="${id}"></div>`)
-      $info = document.body.querySelector(`#${id}`)
+      $root.insertAdjacentHTML('beforeend', `<div class="${cls}"></div>`)
+      $info = $root.querySelector(`.${cls}`)
     }
     setStyle($info, {
       background: 'rgba(0, 0, 0, 0.5)',
