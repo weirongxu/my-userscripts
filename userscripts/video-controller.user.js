@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.2.0
+// @version      0.3.0
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
