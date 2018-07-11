@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         video change play rate
+// @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
 // @version      0.2.0
-// @description  video change play rate
+// @description  video controller
 // @author       Raidou
 // @match        *://*/*
 // @grant        none
