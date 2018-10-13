@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         aria2 WebUI auto restart
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.4.0
+// @version      0.4.1
 // @description  aria2 WebUI auto restart!
 // @author       Raidou
 // @require      https://code.jquery.com/jquery-2.2.4.min.js
@@ -9,7 +9,7 @@
 // @grant        none
 // ==/UserScript==
 
-(function() {
+(async function() {
   'use strict'
 
   function confirmTrue(fn) {
@@ -50,10 +50,10 @@
       const conf = errors[0]
       if (conf.$errorStats.text().trim().includes('file already existed')) {
         await confirmTrue(() => {
-          conf.$.find('.fa-stop').click()
+          conf.$.find('[ng-click="remove(download)"]').click()
         })
       } else {
-        conf.$.find('.fa-repeat').click()
+        conf.$.find('[ng-click="restart(download)"]').click()
       }
       await wait(100)
     }
@@ -65,5 +65,6 @@
     loop()
   }
 
+  await wait(2000)
   loop()
 })()
