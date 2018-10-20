@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.3.0
+// @version      0.3.1
 // @description  try to take over the world!
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -22,31 +22,31 @@ const $curPlayerItem = () =>
 
 document.addEventListener('keydown', (e) => {
   if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
-    return true
+    return
   }
   if (e.shiftKey) {
     switch (e.key) {
       case 'ArrowLeft':
         click($curPlayerItem().previousSibling.querySelector('.bilibili-player-watchlater-item-sup'))
-        return false
+        return e.preventDefault()
       case 'ArrowRight':
         click($curPlayerItem().nextSibling.querySelector('.bilibili-player-watchlater-item-sup'))
-        return false
+        return e.preventDefault()
       case 'ArrowUp':
         click($curPlayerItem().querySelector('.bilibili-player-watchlater-part-item[data-state-play=true]').prev())
-        return false
+        return e.preventDefault()
       case 'ArrowDown':
         click($curPlayerItem().querySelector('.bilibili-player-watchlater-part-item[data-state-play=true]').next())
-        return false
+        return e.preventDefault()
       case 'Enter':
         click(document.querySelector('.bilibili-player-video-web-fullscreen, .bilibili-live-player-video-controller-web-fullscreen-btn button'))
-        return false
+        return e.preventDefault()
       case '|':
         click($curPlayerItem().querySelector('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'))
-        return false
+        return e.preventDefault()
       case 'P':
         click($curPlayerItem().previousSibling.querySelector('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'))
-        return false
+        return e.preventDefault()
     }
   } else if (! (e.metaKey || e.altKey || e.ctrlKey)) {
     switch(e.key) {

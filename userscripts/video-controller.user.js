@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.3.1
+// @version      0.3.2
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -70,26 +70,26 @@
 
   document.addEventListener('keydown', (e) => {
     if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
-      return true
+      return
     }
     if (e.shiftKey) {
       const video = videoInView()
       if (! video) {
-        return true
+        return
       }
       switch (e.key) {
         case '{':
           video.playbackRate -= 0.05
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`)
-          return false
+          return e.preventDefault()
         case '}':
           video.playbackRate += 0.05
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`)
-          return false
+          return e.preventDefault()
         case 'Backspace':
           video.playbackRate = 1
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`)
-          return false
+          return e.preventDefault()
       }
     }
   })
