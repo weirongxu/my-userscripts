@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.3.1
+// @version      0.3.2
 // @description  try to take over the world!
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -33,10 +33,10 @@ document.addEventListener('keydown', (e) => {
         click($curPlayerItem().nextSibling.querySelector('.bilibili-player-watchlater-item-sup'))
         return e.preventDefault()
       case 'ArrowUp':
-        click($curPlayerItem().querySelector('.bilibili-player-watchlater-part-item[data-state-play=true]').prev())
+        click($curPlayerItem().querySelector('.bilibili-player-watchlater-part-item[data-state-play=true]').previousSibling)
         return e.preventDefault()
       case 'ArrowDown':
-        click($curPlayerItem().querySelector('.bilibili-player-watchlater-part-item[data-state-play=true]').next())
+        click($curPlayerItem().querySelector('.bilibili-player-watchlater-part-item[data-state-play=true]').nextSibling)
         return e.preventDefault()
       case 'Enter':
         click(document.querySelector('.bilibili-player-video-web-fullscreen, .bilibili-live-player-video-controller-web-fullscreen-btn button'))
