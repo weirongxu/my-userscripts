@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.3.2
+// @version      0.3.3
 // @description  try to take over the world!
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -27,35 +27,42 @@ document.addEventListener('keydown', (e) => {
   if (e.shiftKey) {
     switch (e.key) {
       case 'ArrowLeft':
+        e.preventDefault()
         click($curPlayerItem().previousSibling.querySelector('.bilibili-player-watchlater-item-sup'))
-        return e.preventDefault()
+        return
       case 'ArrowRight':
+        e.preventDefault()
         click($curPlayerItem().nextSibling.querySelector('.bilibili-player-watchlater-item-sup'))
-        return e.preventDefault()
+        return
       case 'ArrowUp':
+        e.preventDefault()
         click($curPlayerItem().querySelector('.bilibili-player-watchlater-part-item[data-state-play=true]').previousSibling)
-        return e.preventDefault()
+        return
       case 'ArrowDown':
+        e.preventDefault()
         click($curPlayerItem().querySelector('.bilibili-player-watchlater-part-item[data-state-play=true]').nextSibling)
-        return e.preventDefault()
+        return
       case 'Enter':
+        e.preventDefault()
         click(document.querySelector('.bilibili-player-video-web-fullscreen, .bilibili-live-player-video-controller-web-fullscreen-btn button'))
-        return e.preventDefault()
+        return
       case '|':
+        e.preventDefault()
         click($curPlayerItem().querySelector('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'))
-        return e.preventDefault()
+        return
       case 'P':
+        e.preventDefault()
         click($curPlayerItem().previousSibling.querySelector('.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'))
-        return e.preventDefault()
+        return
     }
   } else if (! (e.metaKey || e.altKey || e.ctrlKey)) {
     switch(e.key) {
       case 'ArrowLeft':
         document.querySelector('.bilibili-player-video video').currentTime -= 5
-        return false
+        return
       case 'ArrowRight':
         document.querySelector('.bilibili-player-video video').currentTime += 5
-        return false
+        return
     }
   }
 })
