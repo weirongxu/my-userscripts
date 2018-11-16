@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.3.2
+// @version      0.3.3
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -72,6 +72,10 @@
     if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
       return
     }
+    const stopEvent = () => {
+      e.preventDefault()
+      e.stopPropagation()
+    }
     if (e.shiftKey) {
       const video = videoInView()
       if (! video) {
@@ -79,17 +83,20 @@
       }
       switch (e.key) {
         case '{':
+          stopEvent()
           video.playbackRate -= 0.05
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`)
-          return e.preventDefault()
+          return
         case '}':
+          stopEvent()
           video.playbackRate += 0.05
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`)
-          return e.preventDefault()
+          return
         case 'Backspace':
+          stopEvent()
           video.playbackRate = 1
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`)
-          return e.preventDefault()
+          return
       }
     }
   })
