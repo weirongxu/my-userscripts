@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.4.0
+// @version      0.4.1
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -97,7 +97,7 @@
           video.playbackRate = 1;
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
           return;
-        case 'M':
+        case '"':
           stopEvent();
           if (video !== document.pictureInPictureElement) {
             video.requestPictureInPicture();
