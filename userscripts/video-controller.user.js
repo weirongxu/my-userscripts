@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.4.1
+// @version      0.5.0
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -49,12 +49,11 @@
     }, 600);
   }
 
-  function videoInView() {
-    const $video = document.querySelectorAll('video');
+  function inView($doms) {
     let maxVisibleArea = 0;
-    let video = null;
-    $video.forEach((_video) => {
-      const rect = _video.getBoundingClientRect();
+    let winningDom = null;
+    $doms.forEach((dom) => {
+      const rect = dom.getBoundingClientRect();
       const left = Math.max(rect.left, 0);
       const top = Math.max(rect.top, 0);
       const right = Math.min(rect.right, window.innerWidth);
@@ -62,11 +61,62 @@
       const visibleArea = (right-left) * (bottom-top);
       if (visibleArea > maxVisibleArea) {
         maxVisibleArea = visibleArea;
-        video = _video;
+        winningDom = dom;
       }
     });
-    return video;
+    return winningDom;
   }
+
+  function videoInView() {
+    return inView(document.querySelectorAll('video'));
+  }
+
+  function iframeInView() {
+    return inView(document.querySelectorAll('iframe'));
+  }
+
+  function eventTrigger(eventName) {
+    const video = videoInView();
+    if (! video) {
+      const iframe = iframeInView();
+      if (iframe) {
+        iframe.contentWindow.postMessage({
+          videoController: {
+            eventName,
+          }
+        }, '*')
+      }
+      return;
+    }
+
+    switch (eventName) {
+      case 'rate down':
+        video.playbackRate -= 0.05;
+        showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
+        break;
+      case 'rate up':
+        video.playbackRate += 0.05;
+        showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
+        break;
+      case 'rate resume':
+        video.playbackRate = 1;
+        showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
+        break;
+      case 'picture in picture':
+        if (video !== document.pictureInPictureElement) {
+          video.requestPictureInPicture();
+        } else {
+          document.exitPictureInPicture();
+        }
+        break;
+    }
+  }
+
+  window.addEventListener('message', (event) => {
+    if (event.data.videoController && event.data.videoController.eventName) {
+      eventTrigger(event.data.videoController.eventName);
+    }
+  });
 
   document.addEventListener('keydown', (e) => {
     if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
@@ -77,33 +127,22 @@
       e.stopPropagation();
     }
     if (e.shiftKey) {
-      const video = videoInView();
-      if (! video) {
-        return;
-      }
       switch (e.key) {
         case '{':
           stopEvent();
-          video.playbackRate -= 0.05;
-          showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
+          eventTrigger('rate down');
           return;
         case '}':
           stopEvent();
-          video.playbackRate += 0.05;
-          showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
+          eventTrigger('rate up');
           return;
         case 'Backspace':
           stopEvent();
-          video.playbackRate = 1;
-          showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
+          eventTrigger('rate resume');
           return;
         case '"':
           stopEvent();
-          if (video !== document.pictureInPictureElement) {
-            video.requestPictureInPicture();
-          } else {
-            document.exitPictureInPicture();
-          }
+          eventTrigger('picture in picture');
           return;
       }
     }
