@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.5.0
+// @version      0.5.1
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -35,6 +35,7 @@
       zIndex: 1000000000,
       borderRadius: '5px',
       fontSize: '12px',
+      visibility: 'hidden',
       position: 'fixed',
       opacity: 0,
       transition: '.5s opacity',
@@ -43,9 +44,11 @@
     $info.style.left = rect.left + video.clientWidth/2 - $info.clientWidth/2 + 'px';
     $info.style.top = rect.top + video.clientHeight/2 - $info.clientHeight/2 + 'px';
     $info.style.opacity = 1;
+    $info.style.visibility = 'visible';
     clearTimeout(infoTimer);
     infoTimer = setTimeout(() => {
       $info.style.opacity = 0;
+      $info.style.visibility = 'hidden';
     }, 600);
   }
 
