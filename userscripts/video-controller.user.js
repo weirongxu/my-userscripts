@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.6.0
+// @version      0.6.1
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -114,41 +114,52 @@
   }
 
   function eventTrigger(eventName) {
-    const video = videoInView();
-    if (!video) {
-      const iframe = iframeInView();
-      if (iframe) {
-        iframe.contentWindow.postMessage(
-          {
-            videoController: {
-              eventName
-            }
-          },
-          '*'
-        );
+    const existsVideo = (callback) => {
+      const video = videoInView();
+      if (video) {
+        callback(video);
+      } else {
+        const iframe = iframeInView();
+        if (iframe) {
+          iframe.contentWindow.postMessage(
+            {
+              videoController: {
+                eventName
+              }
+            },
+            '*'
+          );
+        }
       }
-      return;
     }
 
     switch (eventName) {
       case 'rate down':
-        video.playbackRate -= 0.05;
-        showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
+        existsVideo(video => {
+          video.playbackRate -= 0.05;
+          showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
+        })
         break;
       case 'rate up':
-        video.playbackRate += 0.05;
-        showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
+        existsVideo(video => {
+          video.playbackRate += 0.05;
+          showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
+        })
         break;
       case 'rate resume':
-        video.playbackRate = 1;
-        showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
+        existsVideo(video => {
+          video.playbackRate = 1;
+          showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
+        })
         break;
       case 'picture in picture':
-        if (video !== document.pictureInPictureElement) {
-          video.requestPictureInPicture();
-        } else {
-          document.exitPictureInPicture();
-        }
+        existsVideo(video => {
+          if (video !== document.pictureInPictureElement) {
+            video.requestPictureInPicture();
+          } else {
+            document.exitPictureInPicture();
+          }
+        })
         break;
       case 'page fullscreen':
         click(
