@@ -165,7 +165,8 @@
         click(
           document.querySelector(
             [
-              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=web_fullscreen]'
+              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=web_fullscreen]',
+              '.bilibili-live-player-video-controller-web-fullscreen-btn .icon-btn'
             ].join(',')
           )
         );
@@ -175,6 +176,7 @@
           document.querySelector(
             [
               '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=browser_fullscreen]',
+              '.bilibili-live-player-video-controller-fullscreen-btn .icon-btn',
               '.ytp-fullscreen-button'
             ].join(',')
           )
