@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.6.1
+// @version      0.6.2
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -26,7 +26,7 @@
         visibility: hidden;
         position: fixed;
         opacity: 0;
-        transition: all .5s;
+        transition: opacity .5s, visibility .5s;
       }
       .video-controller-info.video-controller-info-show {
         opacity: 1;
