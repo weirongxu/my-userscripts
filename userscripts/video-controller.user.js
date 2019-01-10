@@ -165,8 +165,9 @@
         click(
           document.querySelector(
             [
-              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=web_fullscreen]',
-              '.bilibili-live-player-video-controller-web-fullscreen-btn .icon-btn'
+              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=web_fullscreen]', // bilibili
+              '.bilibili-player-video-btn.bilibili-player-video-web-fullscreen',                       // bilibili
+              '.bilibili-live-player-video-controller-web-fullscreen-btn .icon-btn',                   // bilibili live
             ].join(',')
           )
         );
@@ -175,9 +176,10 @@
         click(
           document.querySelector(
             [
-              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=browser_fullscreen]',
-              '.bilibili-live-player-video-controller-fullscreen-btn .icon-btn',
-              '.ytp-fullscreen-button'
+              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=browser_fullscreen]', // bilibili
+              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen',                           // bilibili
+              '.bilibili-live-player-video-controller-fullscreen-btn .icon-btn',                           // bilibili live
+              '.ytp-fullscreen-button',                                                                    // youtube
             ].join(',')
           )
         );

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.5.0
+// @version      0.5.1
 // @description  try to take over the world!
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -31,7 +31,7 @@
     window.dispatchEvent(new Event('locationchange'));
   });
 
-  function click($elem, event) {
+  function click($elem, _event) {
     if ($elem) {
       $elem.click();
     }
@@ -142,8 +142,8 @@
               e.target.querySelector('.button-bar.tc-slate').insertAdjacentHTML(
                 'afterend',
                 `
-            <span class="see-later-above">see later above</span>
-          `
+                  <span class="see-later-above">see later above</span>
+                `
               );
               e.target
                 .querySelector('.see-later-above')
