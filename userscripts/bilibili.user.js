@@ -2,7 +2,7 @@
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
 // @version      0.5.3
-// @description  try to take over the world!
+// @description  bilibili
 // @author       Raidou
 // @match        *://*.bilibili.com/*
 // @grant        none
