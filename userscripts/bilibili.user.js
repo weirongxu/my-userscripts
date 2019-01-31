@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.5.2
+// @version      0.5.3
 // @description  try to take over the world!
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -155,6 +155,27 @@
         });
     }
   };
+
+  const autoPlay = (maxCount = 10) => {
+    let count = 0;
+    const tryPlay = () => {
+      const btn = document.querySelector('.bilibili-player-video-btn.bilibili-player-video-web-fullscreen');
+      if (btn) {
+        click(btn);
+        click(document.querySelector('.bilibili-player-video'));
+      } else {
+        count += 1;
+        if (count <= maxCount) {
+          setTimeout(tryPlay, 1000);
+        }
+      }
+    };
+    tryPlay();
+  };
+
+  if (document.referrer.startsWith('https://feedly.com/')) {
+    autoPlay();
+  }
 
   window.addEventListener('locationchange', function() {
     setTimeout(bind, 5000);
