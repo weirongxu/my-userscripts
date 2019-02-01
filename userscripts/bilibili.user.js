@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.5.4
+// @version      0.5.5
 // @description  bilibili
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -163,7 +163,7 @@
       const playBtn = document.querySelector('.bilibili-player-video');
       if (btn && playBtn) {
         click(btn);
-        click(playBtn);
+        setTimeout(() => click(playBtn), 500);
       } else {
         count += 1;
         if (count <= maxCount) {
