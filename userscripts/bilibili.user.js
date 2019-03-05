@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.6.0
+// @version      0.6.1
 // @description  bilibili
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -100,7 +100,12 @@
             )
           );
           return;
+        case 'A':
+          stopEvent();
+          openTimelineVideo();
+          return;
       }
+      console.dir(event.key)
     } else if (!(e.metaKey || e.altKey || e.ctrlKey)) {
       switch (e.key) {
         case 'ArrowLeft':
@@ -162,17 +167,21 @@
     }
   };
 
+  const openTimelineVideo = () => {
+    tryCall(() => {
+      const link = document.querySelector('.video-container a');
+      if (link) {
+        location.href = link.href;
+        return true;
+      } else {
+        return false;
+      }
+    });
+  };
+
   const autoOpenVideo = () => {
     if (location.href.startsWith('https://t.bilibili.com')) {
-      tryCall(() => {
-        const link = document.querySelector('.video-container a');
-        if (link) {
-          location.href = link.href
-          return true;
-        } else {
-          return false;
-        }
-      });
+      openTimelineVideo();
     }
   };
 
