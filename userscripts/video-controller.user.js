@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.0
+// @version      0.7.1
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -46,7 +46,7 @@
   function showInfo(video, info) {
     const rect = video.getBoundingClientRect();
     const cls = 'video-controller-info';
-    const $roots = document.querySelectorAll('body, :-webkit-full-screen');
+    const $roots = document.querySelectorAll('body, :-webkit-full-screen:not(video)');
     const $root = $roots[$roots.length - 1];
     let $info = $root.querySelector(`.${cls}`);
     if (!$info) {
