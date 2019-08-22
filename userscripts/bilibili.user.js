@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.5.5
+// @version      0.6.1
 // @description  bilibili
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -100,7 +100,12 @@
             )
           );
           return;
+        case 'A':
+          stopEvent();
+          openTimelineVideo();
+          return;
       }
+      console.dir(event.key)
     } else if (!(e.metaKey || e.altKey || e.ctrlKey)) {
       switch (e.key) {
         case 'ArrowLeft':
@@ -156,25 +161,52 @@
     }
   };
 
-  const autoPlay = (maxCount = 10) => {
-    let count = 0;
-    const tryPlay = () => {
+  const tryCall = (callback, maxCount = 10, count = 0) => {
+    if (!callback() && count <= maxCount) {
+      setTimeout(() => tryCall(callback, maxCount, count + 1), 1000);
+    }
+  };
+
+  const openTimelineVideo = () => {
+    tryCall(() => {
+      const link = document.querySelector('.video-container a');
+      if (link) {
+        location.href = link.href;
+        return true;
+      } else {
+        return false;
+      }
+    });
+  };
+
+  const autoOpenVideo = () => {
+    if (location.href.startsWith('https://t.bilibili.com')) {
+      openTimelineVideo();
+    }
+  };
+
+  const autoPlay = () => {
+    tryCall(() => {
       const btn = document.querySelector('.bilibili-player-video-btn.bilibili-player-video-web-fullscreen');
       const playBtn = document.querySelector('.bilibili-player-video');
       if (btn && playBtn) {
         click(btn);
         setTimeout(() => click(playBtn), 500);
+        return true;
       } else {
-        count += 1;
-        if (count <= maxCount) {
-          setTimeout(tryPlay, 1000);
-        }
+        return false;
       }
-    };
-    tryPlay();
+    });
   };
 
   if (document.referrer.startsWith('https://feedly.com/')) {
+    autoOpenVideo();
+  }
+
+  if ([
+    'https://t.bilibili.com',
+    'https://feedly.com/',
+  ].some((href) => document.referrer.startsWith(href))) {
     autoPlay();
   }
 
