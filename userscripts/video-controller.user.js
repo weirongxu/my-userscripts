@@ -8,7 +8,7 @@
 // @grant        none
 // ==/UserScript==
 
-(function() {
+(function () {
   'use strict';
 
   (function initStyle() {
@@ -56,7 +56,7 @@
     $info.innerHTML = info;
     setStyle($info, {
       left: rect.left + video.clientWidth / 2 - $info.clientWidth / 2 + 'px',
-      top: rect.top + video.clientHeight / 2 - $info.clientHeight / 2 + 'px'
+      top: rect.top + video.clientHeight / 2 - $info.clientHeight / 2 + 'px',
     });
     $info.classList.add('video-controller-info-show');
     clearTimeout(infoTimer);
@@ -68,7 +68,7 @@
   function closest($elem, selector, _default = null) {
     let matches;
     if (typeof selector === 'string') {
-      matches = $elem => $elem.matches(selector);
+      matches = ($elem) => $elem.matches(selector);
     } else if (typeof selector === 'function') {
       matches = selector;
     }
@@ -84,7 +84,7 @@
   function inView($elems) {
     let maxVisibleArea = 0;
     let winningElem = null;
-    $elems.forEach(elem => {
+    $elems.forEach((elem) => {
       const rect = elem.getBoundingClientRect();
       const left = Math.max(rect.left, 0);
       const top = Math.max(rect.top, 0);
@@ -124,78 +124,87 @@
           iframe.contentWindow.postMessage(
             {
               videoController: {
-                eventName
-              }
+                eventName,
+              },
             },
-            '*'
+            '*',
           );
         }
       }
-    }
+    };
 
     switch (eventName) {
       case 'rate down':
-        existsVideo(video => {
+        existsVideo((video) => {
           video.playbackRate -= 0.05;
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
-        })
+        });
         break;
       case 'rate up':
-        existsVideo(video => {
+        existsVideo((video) => {
           video.playbackRate += 0.05;
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
-        })
+        });
         break;
       case 'rate resume':
-        existsVideo(video => {
+        existsVideo((video) => {
           video.playbackRate = 1;
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
-        })
+        });
         break;
       case 'picture in picture':
-        existsVideo(video => {
+        existsVideo((video) => {
           if (video !== document.pictureInPictureElement) {
             video.requestPictureInPicture();
           } else {
             document.exitPictureInPicture();
           }
-        })
+        });
         break;
       case 'page fullscreen':
         click(
           document.querySelector(
             [
-              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=web_fullscreen]', // bilibili
-              '.bilibili-player-video-btn.bilibili-player-video-web-fullscreen',                       // bilibili
-              '.bilibili-live-player-video-controller-web-fullscreen-btn .icon-btn',                   // bilibili live
-              '.fullscreen.fullscreen-web .btn-span',                                                  // acfun
-            ].join(',')
-          )
+              // bilibili
+              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=web_fullscreen]',
+              '.bilibili-player-video-btn.bilibili-player-video-web-fullscreen',
+              // bilibili live
+              '.bilibili-live-player-video-controller-web-fullscreen-btn .icon-btn',
+              // youtube
+              '.ytp-size-button',
+              // acfun
+              '.fullscreen.fullscreen-web .btn-span',
+            ].join(','),
+          ),
         );
         break;
       case 'fullscreen':
         click(
           document.querySelector(
             [
-              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=browser_fullscreen]', // bilibili
-              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen',                           // bilibili
-              '.bilibili-live-player-video-controller-fullscreen-btn .icon-btn',                           // bilibili live
-              '.ytp-fullscreen-button',                                                                    // youtube
-              '.fullscreen.fullscreen-screen .btn-span',                                                   // acfun
-            ].join(',')
-          )
+              // bilibili
+              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=browser_fullscreen]',
+              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen',
+              // bilibili live
+              '.bilibili-live-player-video-controller-fullscreen-btn .icon-btn',
+              // youtube
+              '.ytp-fullscreen-button',
+              // acfun
+              '.fullscreen.fullscreen-screen .btn-span',
+            ].join(','),
+          ),
         );
         break;
     }
   }
 
-  window.addEventListener('message', event => {
+  window.addEventListener('message', (event) => {
     if (event.data.videoController && event.data.videoController.eventName) {
       eventTrigger(event.data.videoController.eventName);
     }
   });
 
-  document.addEventListener('keydown', e => {
+  document.addEventListener('keydown', (e) => {
     if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
       return;
     }
