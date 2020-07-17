@@ -1,17 +1,20 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.6.1
+// @version      0.7.0
 // @description  bilibili
 // @author       Raidou
 // @match        *://*.bilibili.com/*
 // @grant        none
 // ==/UserScript==
 
-(function() {
+(function () {
   'use strict';
 
-  history.pushState = (f =>
+  /**
+   * locationchange event
+   */
+  history.pushState = ((f) =>
     function pushState() {
       const ret = f.apply(this, arguments);
       window.dispatchEvent(new Event('pushState'));
@@ -19,7 +22,7 @@
       return ret;
     })(history.pushState);
 
-  history.replaceState = (f =>
+  history.replaceState = ((f) =>
     function replaceState() {
       const ret = f.apply(this, arguments);
       window.dispatchEvent(new Event('replaceState'));
@@ -31,6 +34,9 @@
     window.dispatchEvent(new Event('locationchange'));
   });
 
+  /**
+   * DOM utils
+   */
   function click($elem, _event) {
     if ($elem) {
       $elem.click();
@@ -39,10 +45,13 @@
 
   const $curPlayerItem = () =>
     document.querySelector(
-      '.bilibili-player .bilibili-player-auxiliary-area .bilibili-player-watchlater-item[data-state-play=true]'
+      '.bilibili-player .bilibili-player-auxiliary-area .bilibili-player-watchlater-item[data-state-play=true]',
     );
 
-  document.addEventListener('keydown', e => {
+  /**
+   * hotkey
+   */
+  document.addEventListener('keydown', (e) => {
     if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
       return;
     }
@@ -56,48 +65,48 @@
           stopEvent();
           click(
             $curPlayerItem().previousSibling.querySelector(
-              '.bilibili-player-watchlater-item-sup'
-            )
+              '.bilibili-player-watchlater-item-sup',
+            ),
           );
           return;
         case 'ArrowRight':
           stopEvent();
           click(
             $curPlayerItem().nextSibling.querySelector(
-              '.bilibili-player-watchlater-item-sup'
-            )
+              '.bilibili-player-watchlater-item-sup',
+            ),
           );
           return;
         case 'ArrowUp':
           stopEvent();
           click(
             $curPlayerItem().querySelector(
-              '.bilibili-player-watchlater-part-item[data-state-play=true]'
-            ).previousSibling
+              '.bilibili-player-watchlater-part-item[data-state-play=true]',
+            ).previousSibling,
           );
           return;
         case 'ArrowDown':
           stopEvent();
           click(
             $curPlayerItem().querySelector(
-              '.bilibili-player-watchlater-part-item[data-state-play=true]'
-            ).nextSibling
+              '.bilibili-player-watchlater-part-item[data-state-play=true]',
+            ).nextSibling,
           );
           return;
         case '|':
           stopEvent();
           click(
             $curPlayerItem().querySelector(
-              '.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'
-            )
+              '.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger',
+            ),
           );
           return;
         case 'P':
           stopEvent();
           click(
             $curPlayerItem().previousSibling.querySelector(
-              '.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger'
-            )
+              '.bilibili-player-watchlater-info-remove.bilibili-player-fr.player-tooltips-trigger',
+            ),
           );
           return;
         case 'A':
@@ -105,32 +114,35 @@
           openTimelineVideo();
           return;
       }
-      console.dir(event.key)
+      console.dir(event.key);
     } else if (!(e.metaKey || e.altKey || e.ctrlKey)) {
       switch (e.key) {
         case 'ArrowLeft':
           document.querySelector(
-            '.bilibili-player-video video'
+            '.bilibili-player-video video',
           ).currentTime -= 5;
           return;
         case 'ArrowRight':
           document.querySelector(
-            '.bilibili-player-video video'
+            '.bilibili-player-video video',
           ).currentTime += 5;
           return;
       }
     }
   });
 
-  const bind = () => {
+  /**
+   * Add see-later to activity home page
+   */
+  const bindSeeLater = () => {
     if (location.href === 'https://t.bilibili.com/?tab=8') {
-      const cardSeeLater = $card => {
+      const cardSeeLater = ($card) => {
         const $later = $card.querySelector('.see-later');
         if (!$later.matches('.done')) {
           click($later);
         }
       };
-      const cardSeeLaterAbove = $card => {
+      const cardSeeLaterAbove = ($card) => {
         cardSeeLater($card);
         const $prevCard = $card.previousElementSibling;
         if ($prevCard) {
@@ -140,7 +152,7 @@
 
       document
         .querySelector('.card-list .content')
-        .addEventListener('mouseover', e => {
+        .addEventListener('mouseover', (e) => {
           const $card = e.target;
           if ($card.matches('.card')) {
             if (!e.target.querySelector('.see-later-above')) {
@@ -148,7 +160,7 @@
                 'afterend',
                 `
                   <span class="see-later-above">see later above</span>
-                `
+                `,
               );
               e.target
                 .querySelector('.see-later-above')
@@ -161,6 +173,15 @@
     }
   };
 
+  window.addEventListener('locationchange', function () {
+    setTimeout(bindSeeLater, 5000);
+  });
+
+  setTimeout(bindSeeLater, 5000);
+
+  /**
+   * Auto open video and play
+   */
   const tryCall = (callback, maxCount = 10, count = 0) => {
     if (!callback() && count <= maxCount) {
       setTimeout(() => tryCall(callback, maxCount, count + 1), 1000);
@@ -187,7 +208,9 @@
 
   const autoPlay = () => {
     tryCall(() => {
-      const btn = document.querySelector('.bilibili-player-video-btn.bilibili-player-video-web-fullscreen');
+      const btn = document.querySelector(
+        '.bilibili-player-video-btn.bilibili-player-video-web-fullscreen',
+      );
       const playBtn = document.querySelector('.bilibili-player-video');
       if (btn && playBtn) {
         click(btn);
@@ -203,16 +226,23 @@
     autoOpenVideo();
   }
 
-  if ([
-    'https://t.bilibili.com',
-    'https://feedly.com/',
-  ].some((href) => document.referrer.startsWith(href))) {
+  if (
+    ['https://t.bilibili.com', 'https://feedly.com/'].some((href) =>
+      document.referrer.startsWith(href),
+    )
+  ) {
     autoPlay();
   }
 
-  window.addEventListener('locationchange', function() {
-    setTimeout(bind, 5000);
-  });
-
-  setTimeout(bind, 5000);
+  /**
+   * reduce the window.requestAnimationFrame
+   */
+  // const requestAnimationFrame = window.requestAnimationFrame;
+  // const cancelAnimationFrame = window.cancelAnimationFrame;
+  window.requestAnimationFrame = (callback) => {
+    return setTimeout(callback, 5000);
+  };
+  window.cancelAnimationFrame = (id) => {
+    clearTimeout(id);
+  };
 })();
