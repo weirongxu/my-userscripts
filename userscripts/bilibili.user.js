@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.0
+// @version      0.7.1
 // @description  bilibili
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -240,7 +240,7 @@
   // const requestAnimationFrame = window.requestAnimationFrame;
   // const cancelAnimationFrame = window.cancelAnimationFrame;
   window.requestAnimationFrame = (callback) => {
-    return setTimeout(callback, 5000);
+    return setTimeout(callback, 1000);
   };
   window.cancelAnimationFrame = (id) => {
     clearTimeout(id);
