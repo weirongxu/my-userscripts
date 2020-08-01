@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.1
+// @version      0.7.2
 // @description  bilibili
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -10,6 +10,17 @@
 
 (function () {
   'use strict';
+  (function initStyle() {
+    const head = document.head;
+    const style = document.createElement('style');
+    style.type = 'text/css';
+    style.textContent = `
+      .bui-slider .bui-track.bui-track-video-progress {
+        height: 10px !important;
+      }
+    `;
+    head.appendChild(style);
+  })();
 
   /**
    * locationchange event
