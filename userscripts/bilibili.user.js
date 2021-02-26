@@ -125,20 +125,7 @@
           openTimelineVideo();
           return;
       }
-      console.dir(event.key);
-    } else if (!(e.metaKey || e.altKey || e.ctrlKey)) {
-      switch (e.key) {
-        case 'ArrowLeft':
-          document.querySelector(
-            '.bilibili-player-video video',
-          ).currentTime -= 5;
-          return;
-        case 'ArrowRight':
-          document.querySelector(
-            '.bilibili-player-video video',
-          ).currentTime += 5;
-          return;
-      }
+      console.dir(e.key);
     }
   });
 
