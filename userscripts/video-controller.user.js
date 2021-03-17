@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.1
+// @version      0.7.2
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -46,7 +46,9 @@
   function showInfo(video, info) {
     const rect = video.getBoundingClientRect();
     const cls = 'video-controller-info';
-    const $roots = document.querySelectorAll('body, :-webkit-full-screen:not(video)');
+    const $roots = document.querySelectorAll(
+      'body, :-webkit-full-screen:not(video)',
+    );
     const $root = $roots[$roots.length - 1];
     let $info = $root.querySelector(`.${cls}`);
     if (!$info) {
@@ -133,26 +135,46 @@
       }
     };
 
-    switch (eventName) {
-      case 'rate down':
+    const eventHanders = {
+      'track prev': () => {
+        click(
+          document
+            .querySelector(
+              // bilibili
+              '#multi_page > div.cur-list > ul > li.on',
+            )
+            .previousSibling.querySelector('a > .clickitem'),
+        );
+      },
+      'track next': () => {
+        click(
+          document
+            .querySelector(
+              // bilibili
+              '#multi_page > div.cur-list > ul > li.on',
+            )
+            .nextSibling.querySelector('a > .clickitem'),
+        );
+      },
+      'rate down': () => {
         existsVideo((video) => {
           video.playbackRate -= 0.05;
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
         });
-        break;
-      case 'rate up':
+      },
+      'rate up': () => {
         existsVideo((video) => {
           video.playbackRate += 0.05;
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
         });
-        break;
-      case 'rate resume':
+      },
+      'rate resume': () => {
         existsVideo((video) => {
           video.playbackRate = 1;
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
         });
-        break;
-      case 'picture in picture':
+      },
+      'picture in picture': () => {
         existsVideo((video) => {
           if (video !== document.pictureInPictureElement) {
             video.requestPictureInPicture();
@@ -160,8 +182,8 @@
             document.exitPictureInPicture();
           }
         });
-        break;
-      case 'page fullscreen':
+      },
+      'page fullscreen': () => {
         click(
           document.querySelector(
             [
@@ -177,8 +199,8 @@
             ].join(','),
           ),
         );
-        break;
-      case 'fullscreen':
+      },
+      fullscreen: () => {
         click(
           document.querySelector(
             [
@@ -194,7 +216,11 @@
             ].join(','),
           ),
         );
-        break;
+      },
+    };
+
+    if (eventName in eventHanders) {
+      eventHanders[eventName]();
     }
   }
 
@@ -204,41 +230,80 @@
     }
   });
 
+  class Key {
+    constructor(event) {
+      /** @type {KeyboardEvent} */
+      this.event = event;
+    }
+
+    /**
+     * @type {[{ctrl: boolean, shift: boolean, alt: boolean, key: string}, string][]}
+     **/
+    binded = [];
+    /**
+     * @param s {string}
+     * @param name {string}
+     * @return {Key}
+     */
+    bind(s, name) {
+      const k = {
+        ctrl: false,
+        shift: false,
+        alt: false,
+      };
+      s = s.toLowerCase();
+      if (s.includes('c-')) {
+        k.ctrl = true;
+        s = s.replace('c-', '');
+      }
+      if (s.includes('s-')) {
+        k.shift = true;
+        s = s.replace('s-', '');
+      }
+      if (s.includes('a-')) {
+        k.alt = true;
+        s = s.replace('a-', '');
+      }
+      k.key = s;
+      this.binded.push([k, name]);
+      return this;
+    }
+
+    stopEvent() {
+      this.event.preventDefault();
+      this.event.stopPropagation();
+    }
+
+    run() {
+      const matched = this.binded.find(([k]) => {
+        return (
+          k.ctrl === this.event.ctrlKey &&
+          k.alt === this.event.altKey &&
+          k.shift === this.event.shiftKey &&
+          k.key === this.event.key.toLowerCase()
+        );
+      });
+      if (matched) {
+        this.stopEvent();
+        eventTrigger(matched[1]);
+      }
+    }
+  }
+
   document.addEventListener('keydown', (e) => {
     if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
       return;
     }
-    const stopEvent = () => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-    if (e.shiftKey) {
-      switch (e.key) {
-        case '{':
-          stopEvent();
-          eventTrigger('rate down');
-          return;
-        case '}':
-          stopEvent();
-          eventTrigger('rate up');
-          return;
-        case 'Backspace':
-          stopEvent();
-          eventTrigger('rate resume');
-          return;
-        case '"':
-          stopEvent();
-          eventTrigger('picture in picture');
-          return;
-        case 'Enter':
-          stopEvent();
-          if (e.ctrlKey) {
-            eventTrigger('fullscreen');
-          } else {
-            eventTrigger('page fullscreen');
-          }
-          return;
-      }
-    }
+
+    new Key(e)
+      .bind('c-[', 'track prev')
+      .bind('c-]', 'track next')
+      .bind('s-{', 'rate down')
+      .bind('s-}', 'rate up')
+      .bind('s-backspace', 'rate resume')
+      .bind('s-"', 'picture in picture')
+      .bind('s-enter', 'page fullscreen')
+      .bind('c-s-enter', 'fullscreen')
+      .run();
   });
 })();

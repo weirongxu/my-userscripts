@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.3
+// @version      0.7.4
 // @description  bilibili
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -125,7 +125,6 @@
           openTimelineVideo();
           return;
       }
-      console.dir(e.key);
     }
   });
 
