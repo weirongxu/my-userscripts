@@ -236,10 +236,10 @@
    */
   // const requestAnimationFrame = window.requestAnimationFrame;
   // const cancelAnimationFrame = window.cancelAnimationFrame;
-  window.requestAnimationFrame = (callback) => {
-    return setTimeout(callback, 1000);
-  };
-  window.cancelAnimationFrame = (id) => {
-    clearTimeout(id);
-  };
+  // window.requestAnimationFrame = (callback) => {
+  //   return setTimeout(callback, 1000);
+  // };
+  // window.cancelAnimationFrame = (id) => {
+  //   clearTimeout(id);
+  // };
 })();
