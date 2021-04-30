@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.3
+// @version      0.7.4
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -150,18 +150,20 @@
       },
       'track next': () => {
         click(
-          document.querySelector(
-            // bilibili
-            '.bilibili-player-video-btn-next',
-          ),
-          document
-            .querySelector(
-              [
-                // bilibili
-                '#multi_page > div.cur-list > ul > li.on',
-              ].join(','),
-            )
-            .nextSibling.querySelector('a > .clickitem'),
+          [
+            document.querySelector(
+              // bilibili
+              '.bilibili-player-video-btn-next',
+            ),
+            document
+              .querySelector(
+                [
+                  // bilibili
+                  '#multi_page > div.cur-list > ul > li.on',
+                ].join(','),
+              )
+              .nextSibling.querySelector('a > .clickitem'),
+          ].find((it) => it !== null),
         );
       },
       'rate down': () => {
