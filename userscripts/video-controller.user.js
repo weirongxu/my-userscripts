@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.4
+// @version      0.7.5
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -109,12 +109,8 @@
     return inView(document.querySelectorAll('iframe'));
   }
 
-  function click(...$elems) {
-    for (const $elem of $elems) {
-      if ($elem) {
-        $elem.click();
-      }
-    }
+  function click($elem) {
+    $elem?.click();
   }
 
   function eventTrigger(eventName) {
@@ -244,12 +240,12 @@
     constructor(event) {
       /** @type {KeyboardEvent} */
       this.event = event;
+      /**
+       * @type {[{ctrl: boolean, shift: boolean, alt: boolean, key: string}, string][]}
+       **/
+      this.binded = [];
     }
 
-    /**
-     * @type {[{ctrl: boolean, shift: boolean, alt: boolean, key: string}, string][]}
-     **/
-    binded = [];
     /**
      * @param s {string}
      * @param name {string}
