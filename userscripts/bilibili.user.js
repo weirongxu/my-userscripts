@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.5
+// @version      0.7.6
 // @description  bilibili
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -13,7 +13,6 @@
   (function initStyle() {
     const head = document.head;
     const style = document.createElement('style');
-    style.type = 'text/css';
     style.textContent = `
       .bui-slider .bui-track.bui-track-video-progress {
         height: 10px !important;
@@ -203,33 +202,33 @@
     }
   };
 
-  const autoPlay = () => {
-    tryCall(() => {
-      const btn = document.querySelector(
-        '.bilibili-player-video-btn.bilibili-player-video-web-fullscreen',
-      );
-      const playBtn = document.querySelector('.bilibili-player-video');
-      if (btn && playBtn) {
-        click(btn);
-        setTimeout(() => click(playBtn), 500);
-        return true;
-      } else {
-        return false;
-      }
-    });
-  };
+  // const autoPlay = () => {
+  //   tryCall(() => {
+  //     const btn = document.querySelector(
+  //       '.bilibili-player-video-btn.bilibili-player-video-web-fullscreen',
+  //     );
+  //     const playBtn = document.querySelector('.bilibili-player-video');
+  //     if (btn && playBtn) {
+  //       click(btn);
+  //       setTimeout(() => click(playBtn), 500);
+  //       return true;
+  //     } else {
+  //       return false;
+  //     }
+  //   });
+  // };
 
   if (document.referrer.startsWith('https://feedly.com/')) {
     autoOpenVideo();
   }
 
-  if (
-    ['https://t.bilibili.com', 'https://feedly.com/'].some((href) =>
-      document.referrer.startsWith(href),
-    )
-  ) {
-    autoPlay();
-  }
+  // if (
+  //   ['https://t.bilibili.com', 'https://feedly.com/'].some((href) =>
+  //     document.referrer.startsWith(href),
+  //   )
+  // ) {
+  //   autoPlay();
+  // }
 
   /**
    * reduce the window.requestAnimationFrame
