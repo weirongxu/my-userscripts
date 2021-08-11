@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.7
+// @version      0.7.8
 // @description  bilibili
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -204,7 +204,10 @@
   };
 
   const autoFullpage = () => {
-    if (!location.href.startsWith('https://www.bilibili.com/video/')) {
+    if (
+      !location.href.startsWith('https://www.bilibili.com/video/') &&
+      !location.href.startsWith('https://www.bilibili.com/s/video/')
+    ) {
       return;
     }
     tryCall(() => {
