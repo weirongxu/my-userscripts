@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.5
+// @version      0.7.6
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -136,30 +136,39 @@
     const eventHanders = {
       'track prev': () => {
         click(
-          document
-            .querySelector(
-              // bilibili
-              '#multi_page > div.cur-list > ul > li.on',
-            )
-            .previousSibling.querySelector('a > .clickitem'),
+          [
+            // bilibili
+            document
+              .querySelector('#multi_page > div.cur-list > ul > li.on')
+              ?.previousSibling.querySelector('a > .clickitem'),
+            document
+              .querySelector(
+                '#eplist_module > div.list-wrapper.simple.longlist > ul > li.ep-item.cursor',
+              )
+              ?.previousSibling.querySelector('a'),
+          ].find((it) => it),
         );
       },
       'track next': () => {
         click(
           [
             document.querySelector(
-              // bilibili
-              '.bilibili-player-video-btn-next',
+              [
+                // bilibili
+                '.bilibili-player-video-btn-next',
+                '.squirtle-video-next',
+              ].join(','),
             ),
+            // bilibili
+            document
+              .querySelector('#multi_page > div.cur-list > ul > li.on')
+              ?.nextSibling.querySelector('a > .clickitem'),
             document
               .querySelector(
-                [
-                  // bilibili
-                  '#multi_page > div.cur-list > ul > li.on',
-                ].join(','),
+                '#eplist_module > div.list-wrapper.simple.longlist > ul > li.ep-item.cursor',
               )
-              .nextSibling.querySelector('a > .clickitem'),
-          ].find((it) => it !== null),
+              ?.nextSibling.querySelector('a'),
+          ].find((it) => it),
         );
       },
       'rate down': () => {
@@ -196,8 +205,11 @@
               // bilibili
               '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=web_fullscreen]',
               '.bilibili-player-video-btn.bilibili-player-video-web-fullscreen',
+              '.squirtle-video-pagefullscreen',
               // bilibili live
               '.bilibili-live-player-video-controller-web-fullscreen-btn .icon-btn',
+              // ixigua
+              '.xgplayer-cssfullscreen',
               // youtube
               '.ytp-size-button',
               // acfun
@@ -213,8 +225,11 @@
               // bilibili
               '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=browser_fullscreen]',
               '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen',
+              '.squirtle-video-fullscreen',
               // bilibili live
               '.bilibili-live-player-video-controller-fullscreen-btn .icon-btn',
+              // ixigua
+              '.xgplayer-fullscreen',
               // youtube
               '.ytp-fullscreen-button',
               // acfun
