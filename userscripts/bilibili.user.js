@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.9
+// @version      0.7.10
 // @description  bilibili
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -197,7 +197,10 @@
   };
 
   const autoOpenVideo = () => {
-    if (!location.href.startsWith('https://t.bilibili.com/')) {
+    if (
+      !location.href.startsWith('https://t.bilibili.com/') ||
+      location.href === 'https://t.bilibili.com/'
+    ) {
       return;
     }
     openTimelineVideo();
