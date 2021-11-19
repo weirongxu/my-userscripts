@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.6
+// @version      0.7.7
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -295,7 +295,7 @@
       this.event.stopPropagation();
     }
 
-    run() {
+    boot() {
       const matched = this.binded.find(([k]) => {
         return (
           k.ctrl === this.event.ctrlKey &&
@@ -312,7 +312,10 @@
   }
 
   document.addEventListener('keydown', (e) => {
-    if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
+    if (
+      ['INPUT', 'TEXTAREA'].includes(e.target.tagName) ||
+      e.target.isContentEditable
+    ) {
       return;
     }
 
@@ -325,6 +328,6 @@
       .bind('s-"', 'picture in picture')
       .bind('s-enter', 'page fullscreen')
       .bind('c-s-enter', 'fullscreen')
-      .run();
+      .boot();
   });
 })();
