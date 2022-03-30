@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.10
+// @version      0.7.11
 // @description  bilibili
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -121,7 +121,7 @@
           return;
         case 'A':
           stopEvent();
-          openTimelineVideo();
+          openTimelineVideo(true);
           return;
       }
     }
@@ -184,15 +184,20 @@
     }
   };
 
-  const openTimelineVideo = () => {
+  const openTimelineVideo = (force) => {
     tryCall(() => {
-      const link = document.querySelector('.video-container a');
-      if (link) {
-        location.href = link.href;
-        return true;
-      } else {
+      const link = document.querySelector('a.bili-dyn-card-video');
+      if (!link) {
         return false;
       }
+
+      const dynId = location.href.split('/').pop();
+      if (!force && dynId !== link.attributes.getNamedItem('dyn-id').value) {
+        return true;
+      }
+
+      location.href = link.href;
+      return true;
     });
   };
 
@@ -203,7 +208,7 @@
     ) {
       return;
     }
-    openTimelineVideo();
+    openTimelineVideo(false);
   };
 
   const autoFullpage = () => {
