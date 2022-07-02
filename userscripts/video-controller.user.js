@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.7
+// @version      0.7.8
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -203,9 +203,7 @@
           document.querySelector(
             [
               // bilibili
-              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=web_fullscreen]',
-              '.bilibili-player-video-btn.bilibili-player-video-web-fullscreen',
-              '.squirtle-video-pagefullscreen',
+              '.bpx-player-ctrl-btn.bpx-player-ctrl-web',
               // bilibili live
               '.bilibili-live-player-video-controller-web-fullscreen-btn .icon-btn',
               // ixigua
@@ -223,9 +221,7 @@
           document.querySelector(
             [
               // bilibili
-              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen [name=browser_fullscreen]',
-              '.bilibili-player-video-btn.bilibili-player-video-btn-fullscreen',
-              '.squirtle-video-fullscreen',
+              '.bpx-player-ctrl-btn.bpx-player-ctrl-full',
               // bilibili live
               '.bilibili-live-player-video-controller-fullscreen-btn .icon-btn',
               // ixigua
