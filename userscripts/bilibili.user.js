@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.11
+// @version      0.7.12
 // @description  bilibili
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -220,7 +220,7 @@
     }
     tryCall(() => {
       const btn = document.querySelector(
-        '.bilibili-player-video-btn.bilibili-player-video-web-fullscreen',
+        '.bpx-player-ctrl-btn.bpx-player-ctrl-web',
       );
       if (btn) {
         click(btn);
