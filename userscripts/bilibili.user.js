@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.12
+// @version      0.7.13
 // @description  bilibili
 // @author       Raidou
 // @match        *://*.bilibili.com/*
@@ -176,10 +176,25 @@
   setTimeout(bindSeeLater, 5000);
 
   /**
+   * waiting until tab visibility
+   */
+  const waitVisibility = async () => {
+    return new Promise((resolve) => {
+      document.addEventListener('visibilitychange', resolve, {
+        once: true,
+      });
+    });
+  };
+
+  /**
    * Auto open video and play
    */
-  const tryCall = (callback, maxCount = 10, count = 0) => {
-    if (!callback() && count <= maxCount) {
+  const tryCall = async (callback, maxCount = 10, count = 0) => {
+    if (document.hidden) {
+      await waitVisibility();
+    }
+    const result = callback();
+    if (!result && count <= maxCount) {
       setTimeout(() => tryCall(callback, maxCount, count + 1), 1000);
     }
   };
