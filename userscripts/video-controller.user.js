@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.7.8
+// @version      0.8.0
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -173,13 +173,15 @@
       },
       'rate down': () => {
         existsVideo((video) => {
-          video.playbackRate -= 0.05;
+          const rate = video.playbackRate * 10
+          video.playbackRate = (rate - 1) / 10;
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
         });
       },
       'rate up': () => {
         existsVideo((video) => {
-          video.playbackRate += 0.05;
+          const rate = video.playbackRate * 10
+          video.playbackRate = (rate + 1) / 10;
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
         });
       },
