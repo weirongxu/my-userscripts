@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.8.0
+// @version      0.8.1
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -114,6 +114,9 @@
   }
 
   function eventTrigger(eventName) {
+    /**
+     * @param callback {(video: Video) => void}
+     */
     const existsVideo = (callback) => {
       const video = videoInView();
       if (video) {
@@ -173,14 +176,14 @@
       },
       'rate down': () => {
         existsVideo((video) => {
-          const rate = video.playbackRate * 10
+          const rate = video.playbackRate * 10;
           video.playbackRate = (rate - 1) / 10;
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
         });
       },
       'rate up': () => {
         existsVideo((video) => {
-          const rate = video.playbackRate * 10
+          const rate = video.playbackRate * 10;
           video.playbackRate = (rate + 1) / 10;
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
         });
@@ -191,10 +194,86 @@
           showInfo(video, `rate: ${video.playbackRate.toFixed(2)}`);
         });
       },
-      'picture in picture': () => {
-        existsVideo((video) => {
+      'picture in picture': async () => {
+        // if ('documentPictureInPicture' in window) {
+        //   if (documentPictureInPicture.window) {
+        //     documentPictureInPicture.window.close();
+        //     return;
+        //   } else {
+        //     /**
+        //      * @type {{
+        //      *  cls: string,
+        //      *  css?: string,
+        //      *  attach: (props: {el: HTMLElement, win: Window}) => () => void,
+        //      * }}
+        //      */
+        //     const rules = [
+        //       // bilibili
+        //       {
+        //         cls: '.bpx-player-video-area',
+        //         css: `.bpx-player-control-bottom { display: none !important; }`,
+        //       },
+        //       // youtube
+        //       {
+        //         cls: '.html5-video-player',
+        //         css: `video { width: 100vw !important; height: 100vh !important; }`,
+        //       },
+        //     ];
+        //     for (const rule of rules) {
+        //       const pipEl = document.querySelector(rule.cls);
+        //       if (!pipEl) continue;
+        //
+        //       const parentDoc = pipEl.parentElement;
+        //       const childIdx = [...parentDoc.childNodes].indexOf(pipEl);
+        //       const pipWindow = await documentPictureInPicture.requestWindow({
+        //         width: 500,
+        //         height: 300,
+        //       });
+        //
+        //       // Copy all style sheets.
+        //       [...document.styleSheets].forEach((styleSheet) => {
+        //         try {
+        //           const cssRules = [...styleSheet.cssRules]
+        //             .map((rule) => rule.cssText)
+        //             .join('');
+        //           const style = document.createElement('style');
+        //
+        //           style.textContent = cssRules;
+        //           pipWindow.document.head.appendChild(style);
+        //         } catch (e) {
+        //           const link = document.createElement('link');
+        //
+        //           link.rel = 'stylesheet';
+        //           link.type = styleSheet.type;
+        //           link.media = styleSheet.media;
+        //           link.href = styleSheet.href;
+        //           pipWindow.document.head.appendChild(link);
+        //         }
+        //       });
+        //       if (rule.css) {
+        //         const style = document.createElement('style');
+        //         style.textContent = rule.css;
+        //         pipWindow.document.head.appendChild(style);
+        //       }
+        //
+        //       // pip
+        //       pipWindow.document.body.append(pipEl);
+        //       const dispose = rule.attach?.({ el: pipEl, win: pipWindow });
+        //       pipWindow.addEventListener(
+        //         'pagehide',
+        //         () => {
+        //           dispose?.();
+        //           parentDoc.insertBefore(pipEl, parentDoc.childNodes[childIdx]);
+        //         },
+        //         { once: true },
+        //       );
+        //       return;
+        //     }
+        //   }
+        // }
+        existsVideo(async (video) => {
           if (video !== document.pictureInPictureElement) {
-            video.requestPictureInPicture();
+            await video.requestPictureInPicture();
           } else {
             document.exitPictureInPicture();
           }
