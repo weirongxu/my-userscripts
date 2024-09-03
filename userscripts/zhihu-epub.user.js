@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         zhihu epub
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.2.1
+// @version      0.2.2
 // @description  zhihu epub
 // @author       Raidou
 // @match        *://*.zhihu.com/*
@@ -98,7 +98,7 @@ const sleep = async (sm) => new Promise((resolve) => setTimeout(resolve, sm));
         continue;
       }
       const content = `
-        <p class="${this.PARA_IGNORE_CLASS}">
+        <p class="${gen.PARA_IGNORE_CLASS}">
           <a target="_blank" href="${link}">
             ${link ?? '没有找到 URL'}
           </a>
