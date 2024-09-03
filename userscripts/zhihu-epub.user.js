@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         zhihu epub
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.2.0
+// @version      0.2.1
 // @description  zhihu epub
 // @author       Raidou
 // @match        *://*.zhihu.com/*
@@ -215,6 +215,13 @@ const sleep = async (sm) => new Promise((resolve) => setTimeout(resolve, sm));
       return `text/${filename}.html`;
     }
 
+    /**
+     * @param {string} filename
+     */
+    genNavHref(filename) {
+      return `${filename}.html`;
+    }
+
     genStyle() {
       this.zip.file(
         'page-styles.css',
@@ -290,7 +297,7 @@ const sleep = async (sm) => new Promise((resolve) => setTimeout(resolve, sm));
             ${items
               .map(
                 (item) =>
-                  `<li>${`<a href="${this.genContentPath(item.filename)}">${
+                  `<li>${`<a href="${this.genNavHref(item.filename)}">${
                     item.title
                   }</a>`}</li>`,
               )
