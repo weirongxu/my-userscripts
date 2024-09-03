@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         zhihu epub
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.0.1
+// @version      0.1.0
 // @description  zhihu epub
 // @author       Raidou
 // @match        *://*.zhihu.com/*
@@ -81,13 +81,24 @@ const sleep = async (sm) => new Promise((resolve) => setTimeout(resolve, sm));
         console.error(`item ${i} can not get title`);
         continue;
       }
+      const metaEl = item.querySelector('.ContentItem-meta');
+      if (!metaEl) {
+        console.error(`item ${i} can not find meta`);
+        continue;
+      }
+      const author = metaEl.querySelector('.AuthorInfo-name');
+      if (!author) {
+        console.error(`item ${i} can not find author`);
+        continue;
+      }
       let rich = item.querySelector('.RichContent');
       if (!rich) {
         console.error(`item ${i} can not find rich`);
         continue;
       }
       const content = `
-        <h1>${title}</h1>
+        <h1>问题: ${title}</h1>
+        <h2>作者: ${author}</h2>
         ${rich.innerHTML}
       `;
       gen.genContentHTML(`${i.toString().padStart(3, '0')}`, title, content);
