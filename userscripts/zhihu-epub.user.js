@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         zhihu epub
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.1.0
+// @version      0.1.1
 // @description  zhihu epub
 // @author       Raidou
 // @match        *://*.zhihu.com/*
@@ -86,7 +86,7 @@ const sleep = async (sm) => new Promise((resolve) => setTimeout(resolve, sm));
         console.error(`item ${i} can not find meta`);
         continue;
       }
-      const author = metaEl.querySelector('.AuthorInfo-name');
+      const author = metaEl.querySelector('.AuthorInfo-name')?.textContent;
       if (!author) {
         console.error(`item ${i} can not find author`);
         continue;
