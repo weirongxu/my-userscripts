@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         zhihu epub
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.1.1
+// @version      0.2.0
 // @description  zhihu epub
 // @author       Raidou
 // @match        *://*.zhihu.com/*
@@ -81,6 +81,7 @@ const sleep = async (sm) => new Promise((resolve) => setTimeout(resolve, sm));
         console.error(`item ${i} can not get title`);
         continue;
       }
+      const link = titleEl.querySelector('a')?.getAttribute('href');
       const metaEl = item.querySelector('.ContentItem-meta');
       if (!metaEl) {
         console.error(`item ${i} can not find meta`);
@@ -97,6 +98,11 @@ const sleep = async (sm) => new Promise((resolve) => setTimeout(resolve, sm));
         continue;
       }
       const content = `
+        <p class="${this.PARA_IGNORE_CLASS}">
+          <a target="_blank" href="${link}">
+            ${link ?? '没有找到 URL'}
+          </a>
+        </p>
         <h1>问题: ${title}</h1>
         <h2>作者: ${author}</h2>
         ${rich.innerHTML}
