@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         zhihu epub
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.2.2
+// @version      0.2.3
 // @description  zhihu epub
 // @author       Raidou
 // @match        *://*.zhihu.com/*
@@ -126,6 +126,7 @@ const sleep = async (sm) => new Promise((resolve) => setTimeout(resolve, sm));
        filename: string,
        title: string,
        properties?: string
+       spine: boolean
      }}
    */
 
@@ -200,6 +201,7 @@ const sleep = async (sm) => new Promise((resolve) => setTimeout(resolve, sm));
             </manifest>
             <spine>
               ${this.items
+                .filter(({ spine }) => spine)
                 .map(({ filename }) => `<itemref idref="${filename}" />`)
                 .join('\n')}
             </spine>
@@ -266,10 +268,10 @@ const sleep = async (sm) => new Promise((resolve) => setTimeout(resolve, sm));
      * @param {string} filename
      * @param {string} title
      * @param {string} content
-     * @param {string=} properties
+     * @param {{properties?: string, spine?: boolean}=} config
      */
-    genContentHTML(filename, title, content, properties) {
-      this.items.push({ filename, title, properties });
+    genContentHTML(filename, title, content, { properties, spine } = {}) {
+      this.items.push({ filename, title, properties, spine: spine ?? true });
       this.zip.file(
         this.genContentPath(filename),
         `
@@ -314,7 +316,7 @@ const sleep = async (sm) => new Promise((resolve) => setTimeout(resolve, sm));
             ${renderOl(this.items)}
           </nav>
         `.trim(),
-        'nav',
+        { properties: 'nav', spine: false },
       );
     }
 
