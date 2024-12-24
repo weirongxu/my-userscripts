@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         video controller
 // @namespace    https://github.com/weirongxu/my-userscripts
-// @version      0.8.1
+// @version      0.8.2
 // @description  video controller
 // @author       Raidou
 // @match        *://*/*
@@ -46,24 +46,26 @@
   function showInfo(video, info) {
     const rect = video.getBoundingClientRect();
     const cls = 'video-controller-info';
+    const clsShow = 'video-controller-info-show';
     const $roots = document.querySelectorAll(
       'body, :-webkit-full-screen:not(video)',
     );
     const $root = $roots[$roots.length - 1];
     let $info = $root.querySelector(`.${cls}`);
     if (!$info) {
-      $root.insertAdjacentHTML('beforeend', `<div class="${cls}"></div>`);
-      $info = $root.querySelector(`.${cls}`);
+      $info = document.createElement('div');
+      $info.classList.add(cls);
+      $root.appendChild($info);
     }
-    $info.innerHTML = info;
+    $info.innerText = info;
     setStyle($info, {
       left: rect.left + video.clientWidth / 2 - $info.clientWidth / 2 + 'px',
       top: rect.top + video.clientHeight / 2 - $info.clientHeight / 2 + 'px',
     });
-    $info.classList.add('video-controller-info-show');
+    $info.classList.add(clsShow);
     clearTimeout(infoTimer);
     infoTimer = setTimeout(() => {
-      $info.classList.remove('video-controller-info-show');
+      $info.classList.remove(clsShow);
     }, 600);
   }
 
